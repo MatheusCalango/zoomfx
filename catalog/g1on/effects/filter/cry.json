@@ -1,0 +1,59 @@
+{
+  "id": "cry",
+  "name": "Cry",
+  "category": "filter",
+  "description": "Varia o som como um talk box.",
+  "tag": [64, 96, 0, 4],
+  "status": "unverified",
+  "params": [
+    {
+      "name": "Range",
+      "page": 1,
+      "type": "int",
+      "min": 1,
+      "max": 10,
+      "default": 5,
+      "pedal": true,
+      "encoding": [[5, 12, -2], [0, 2, 2], [4, 1, 6]]
+    },
+    {
+      "name": "Reso",
+      "page": 1,
+      "type": "int",
+      "min": 0,
+      "max": 10,
+      "default": 5,
+      "pedal": true,
+      "encoding": [[6, 15, 3]]
+    },
+    {
+      "name": "Sense",
+      "page": 1,
+      "type": "enum",
+      "options": [-10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+      "default": 1,
+      "pedal": true,
+      "encoding": [[9, 31, 0]]
+    },
+    {
+      "name": "Bal",
+      "page": 2,
+      "type": "int",
+      "min": 0,
+      "max": 100,
+      "default": 50,
+      "pedal": true,
+      "encoding": [[11, 120, -3], [8, 4, 3], [10, 3, 5]]
+    },
+    {
+      "name": "Level",
+      "page": 2,
+      "type": "int",
+      "min": 0,
+      "max": 150,
+      "default": 100,
+      "pedal": true,
+      "encoding": [[12, 248, -3], [8, 4, 2], [11, 3, 5]]
+    }
+  ]
+}

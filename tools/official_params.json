@@ -1,0 +1,105 @@
+{
+  "_source": "ZOOM G1on/G1Xon Effects List (E_G1on_G1Xon_FX-list). Formato de cada parâmetro: [nome, página, faixa, controlável pelo pedal]. Faixa: 'a..b' inteiro; 'A|B' opções; 'values:...' lista numérica; 'raw' = codificação desconhecida.",
+  "categories": {
+    "dynamics": {
+      "comp": ["Comp", "Compressor no estilo MXR Dyna Comp.", [["Sense",1,"0..10",true],["Tone",1,"0..10",false],["Level",1,"0..150",true],["ATTCK",2,"Slow|Fast",false]]],
+      "160comp": ["160 Comp", "Compressor no estilo dbx 160A.", [["THRSH",1,"-60..0",false],["Ratio",1,"raw",false],["Gain",1,"0..20",false],["Knee",2,"Hard|Soft",false],["Level",2,"0..150",true]]],
+      "slowattck": ["SlowATTCK", "Suaviza o ataque de cada nota (efeito 'violino').", [["Time",1,"1..50",true],["Curve",1,"0..10",true],["Level",1,"0..150",true]]],
+      "znr": ["ZNR", "Redução de ruído da Zoom: corta o ruído nas pausas.", [["THRSH",1,"1..25",true],["DETCT",1,"GtrIn|EfxIn",false],["Level",1,"0..150",true]]],
+      "noisegate": ["NoiseGate", "Noise gate que corta o som nas pausas.", [["THRSH",1,"1..25",true],["Level",1,"0..150",true]]]
+    },
+    "filter": {
+      "autowah": ["AutoWah", "Wah que varia com a intensidade da palhetada.", [["Sense",1,"values:-10..-1,1..10",true],["Reso",1,"0..10",true],["Level",1,"0..150",true]]],
+      "cry": ["Cry", "Varia o som como um talk box.", [["Range",1,"1..10",true],["Reso",1,"0..10",true],["Sense",1,"values:-10..-1,1..10",true],["Bal",2,"0..100",true],["Level",2,"0..150",true]]],
+      "mfilter": ["M-Filter", "Filtro de envelope no estilo MOOG MF-101.", [["Freq",1,"0..100",true],["Sense",1,"0..10",false],["Reso",1,"0..10",true],["Type",2,"HPF|BPF|LPF",false],["Chara",2,"2Pole|4Pole",false],["VLCTY",2,"Fast|Slow",false],["Bal",3,"0..100",true],["Level",3,"0..150",true]]],
+      "seqfilter": ["SeqFLTR", "Filtro sequencial no estilo Z.Vex Seek-Wah.", [["Step",1,"2..8",false],["PTTRN",1,"1..8",false],["Speed",1,"1..50",true],["Shape",2,"0..10",false],["Reso",2,"0..10",true],["Level",2,"0..150",true]]]
+    },
+    "drive": {
+      "booster": ["Booster", "Aumenta o ganho do sinal.", "DRIVE3"],
+      "overdrive": ["OverDrive", "Simulação do BOSS OD-1.", "DRIVE3"],
+      "tscream": ["T Scream", "Simulação do Ibanez TS808.", "DRIVE3"],
+      "governor": ["Governor", "Simulação do Marshall Guv'nor.", "DRIVE3"],
+      "distplus": ["Dist+", "Simulação do MXR Distortion+.", "DRIVE3"],
+      "squeak": ["Squeak", "Simulação do Pro Co RAT.", "DRIVE3"],
+      "fuzzsmile": ["FuzzSmile", "Simulação do Fuzz Face.", "DRIVE3"],
+      "greatmuff": ["GreatMuff", "Simulação do Electro-Harmonix Big Muff.", "DRIVE3"],
+      "zclean": ["Z Clean", "Som limpo original da Zoom.", "DRIVE3"],
+      "leadzoom9002": ["Lead", "Distorção brilhante e suave.", "DRIVE3"],
+      "extremedistortion": ["ExtremeDS", "Distorção de ganho altíssimo.", "DRIVE3"],
+      "acoustic": ["Aco.Sim", "Faz a guitarra soar como violão.", [["Top",1,"0..100",true],["Body",1,"0..100",false],["Level",1,"0..150",true]]]
+    },
+    "amp": {
+      "fdcombo": ["FD COMBO", "Fender Twin Reverb ('65).", "AMP"],
+      "deluxer": ["DELUXE-R", "Fender Deluxe Reverb (1965).", "AMP"],
+      "fdvibro": ["FD VIBRO", "Fender Vibroverb ('63).", "AMP"],
+      "usblues": ["US BLUES", "Fender Tweed Bassman (crunch).", "AMP"],
+      "vxcombo": ["VX COMBO", "Combo britânico dos anos 60.", "AMP"],
+      "vxjmi": ["VX JMI", "Combo britânico classe A antigo.", "AMP"],
+      "bgcrunch": ["BG CRUNCH", "Mesa Boogie MkIII (crunch).", "AMP"],
+      "match30": ["MATCH 30", "Matchless DC-30 (canal 1).", "AMP"],
+      "cardrive": ["CAR DRIVE", "Carr Mercury.", "AMP"],
+      "twrock": ["TW ROCK", "Two Rock Emerald 50 (drive).", "AMP"],
+      "tonecity": ["TONE CITY", "Sound City 50 Plus Mark 2.", "AMP"],
+      "hwstack": ["HW STACK", "Hiwatt Custom 100.", "AMP"],
+      "tangerine": ["TANGERINE", "Orange Graphic 120.", "AMP"],
+      "bbreaker": ["B-BREAKER", "Marshall 1962 Bluesbreaker.", "AMP"],
+      "mscrunch": ["MS CRUNCH", "Marshall 1959 (crunch).", "AMP"],
+      "ms1959": ["MS 1959", "Marshall 1959 Plexi (1969).", "AMP"],
+      "msdrive": ["MS DRIVE", "Marshall JCM2000 (high gain).", "AMP"],
+      "bgndrv": ["BGN DRIVE", "Bogner Ecstasy (canal 3).", "AMP"],
+      "bgdrive": ["BG DRIVE", "Mesa Boogie Dual Rectifier, canal vermelho (Vintage).", "AMP"],
+      "dzdrive": ["DZ DRIVE", "Diezel Herbert (high gain).", "AMP"],
+      "alien": ["ALIEN", "Engl Invader (high gain).", "AMP"],
+      "revo1": ["REVO-1", "Krank Revolution 1 Plus (high gain).", "AMP"]
+    },
+    "eq": {
+      "graphiceq": ["GraphicEQ", "Equalizador gráfico de 6 bandas.", [["160Hz",1,"-12..12",false],["400Hz",1,"-12..12",false],["800Hz",1,"-12..12",false],["3.2kHz",2,"-12..12",false],["6.4kHz",2,"-12..12",false],["12kHz",2,"-12..12",false],["Level",3,"0..150",true]]],
+      "paraeq": ["ParaEQ", "Equalizador paramétrico de 2 bandas.", [["Freq1",1,"raw",false],["Q1",1,"0.5|1|2|4|8|16",false],["Gain1",1,"-12..12",false],["Freq2",2,"raw",false],["Q2",2,"0.5|1|2|4|8|16",false],["Gain2",2,"-12..12",false],["Level",3,"0..150",true]]]
+    },
+    "modulation": {
+      "tremelo": ["Tremolo", "Varia o volume num ritmo constante.", [["Depth",1,"0..100",true],["Rate",1,"0..50",true],["Level",1,"0..150",true],["Wave",2,"WAVE30",true]]],
+      "slicer": ["Slicer", "Corta o som ritmicamente.", [["PTTRN",1,"1..20",false],["Speed",1,"1..50",true],["Bal",1,"0..100",true],["THRSH",2,"0..50",false],["Level",2,"0..150",true]]],
+      "phaser": ["Phaser", "Variação de fase.", [["Rate",1,"1..50",true],["Color",1,"4 STG|8 STG|inv 4|inv 8",false],["Level",1,"0..150",true]]],
+      "vibrato": ["Vibrato", "Vibrato automático.", [["Depth",1,"0..100",false],["Rate",1,"0..50",true],["Bal",1,"0..100",true],["Tone",2,"0..10",false],["Level",2,"0..150",true]]],
+      "thevibe": ["TheVibe", "Som de Uni-Vibe.", [["Speed",1,"0..50",true],["Depth",1,"0..100",true],["Bias",1,"0..100",true],["Wave",2,"0..100",true],["Mode",2,"VIBRT|CHORS",false],["Level",2,"0..150",true]]],
+      "detune": ["Detune", "Cópia levemente desafinada misturada ao original.", [["Cent",1,"-25..25",false],["PreD",1,"0..50",false],["Mix",1,"0..100",true],["Tone",2,"0..10",false],["Level",2,"0..150",true]]],
+      "stereocho": ["StereoCho", "Chorus estéreo de timbre limpo.", [["Depth",1,"0..100",true],["Rate",1,"1..50",true],["Mix",1,"0..100",true],["Tone",2,"0..10",false],["Level",2,"0..150",true]]],
+      "supercho": ["SuperCho", "Modelo do BOSS CH-1 Super Chorus.", [["E.LVL",1,"0..120",true],["Rate",1,"0..100",true],["Depth",1,"0..100",true],["EQ",2,"0..100",false],["Mode",2,"MONO|STR",false]]],
+      "coronatri": ["CoronaTri", "Modelo do tc electronic Corona Tri-Chorus.", [["SPEED",1,"0..100",true],["DEPTH",1,"0..100",false],["FxLVL",1,"0..100",true],["TONE",2,"0..100",false],["DRY",2,"OFF|ON",true]]],
+      "flanger": ["Flanger", "Flanger tipo 'jato' modelado num ADA Flanger.", [["Depth",1,"0..100",true],["Rate",1,"0..50",true],["Reso",1,"-10..10",true],["PreD",2,"0..50",true],["Mix",2,"0..100",true],["Level",2,"0..150",true]]],
+      "octave": ["Octave", "Adiciona uma e duas oitavas abaixo.", [["Oct1",1,"0..100",true],["Oct2",1,"0..100",true],["Dry",1,"0..100",true],["Chara",2,"0..100",false],["Tone",2,"0..10",false],["Level",2,"0..150",true]]],
+      "pitchshft": ["PitchSHFT", "Muda a afinação para cima ou para baixo.", [["Shift",1,"values:-12..12,24",false],["Tone",1,"0..10",false],["Bal",1,"0..100",true],["Fine",2,"-25..25",false],["Level",2,"0..150",true]]],
+      "monopitch": ["MonoPitch", "Pitch shifter para notas únicas.", [["Shift",1,"values:-12..12,24",false],["Tone",1,"0..10",false],["Bal",1,"0..100",true],["Fine",2,"-25..25",false],["Level",2,"0..150",true]]],
+      "hps": ["HPS", "Harmonizador que segue escala e tom.", [["Scale",1,"-6|-5|-4|-3|-m|m|3|4|5|6",false],["Key",1,"C|C#|D|D#|E|F|F#|G|G#|A|A#|B",false],["Mix",1,"0..100",true],["Tone",2,"0..10",false],["Level",2,"0..150",true]]],
+      "ringmod": ["RingMod", "Som metálico de modulação em anel.", [["Freq",1,"1..50",true],["Tone",1,"0..10",false],["Bal",1,"0..100",true],["Level",2,"0..150",false]]],
+      "rotocloset": ["Rt Closet", "Simula um alto-falante rotativo.", [["Bal",1,"0..100",true],["Mode",1,"Slow|Fast",true],["Level",1,"0..150",true],["Drive",2,"0..100",false]]]
+    },
+    "delay": {
+      "delay": ["Delay", "Delay digital longo, até 4000 ms.", [["Time",1,"1..4000",false],["F.B",1,"0..100",true],["Mix",1,"0..100",true],["HiDMP",2,"0..10",false],["P-P",2,"MONO|P-P",false],["Level",2,"0..150",true],["Tail",3,"OFF|ON",false]]],
+      "carbondelay": ["CarbonDly", "Delay analógico no estilo MXR, com modulação.", [["DELAY",1,"19..581",true],["REGEN",1,"0..100",true],["MIX",1,"0..100",true],["MOD",2,"OFF|ON",false],["WIDTH",2,"0..50",false],["SPEED",2,"0..50",true],["Tail",3,"OFF|ON",false],["Sync",3,"raw",false]]],
+      "tapeecho": ["TapeEcho", "Eco de fita.", [["Time",1,"1..2000",true],["F.B",1,"0..100",true],["Mix",1,"0..100",true],["HiDMP",2,"0..10",false],["Level",2,"0..150",true],["Tail",2,"OFF|ON",false]]],
+      "reversedelay": ["ReverseDL", "Delay reverso, até 2000 ms.", [["Time",1,"10..2000",false],["F.B",1,"0..100",true],["Bal",1,"0..100",true],["HiDMP",2,"0..10",false],["Level",2,"0..150",true],["Tail",2,"OFF|ON",false]]],
+      "filterdly": ["FilterDly", "Delay com repetição filtrada e modulada.", [["Time",1,"1..2000",false],["F.B",1,"0..100",true],["Mix",1,"0..100",true],["Rate",2,"1..50",true],["Depth",2,"0..100",true],["Reso",2,"0..10",true],["Level",3,"0..150",true],["Tail",3,"OFF|ON",false]]],
+      "stereodelay": ["StereoDly", "Delay estéreo com tempos L/R separados.", [["TimeL",1,"1..2000",false],["TimeR",1,"1..2000",false],["Mix",1,"0..100",true],["LchFB",2,"0..100",true],["RchFB",2,"0..100",true],["Level",2,"0..150",true],["LchLv",3,"0..100",true],["RchLv",3,"0..100",true],["Tail",3,"OFF|ON",false]]]
+    },
+    "reverb": {
+      "hdhall": ["HD Hall", "Reverb de salão denso.", [["PreD",1,"1..200",false],["Decay",1,"0..100",true],["Mix",1,"0..100",true],["LoDMP",2,"0..100",true],["HiDMP",2,"0..100",true],["Tail",2,"OFF|ON",false]]],
+      "hall": ["Hall", "Reverb de sala de concerto.", [["Decay",1,"1..30",true],["Tone",1,"0..10",false],["Mix",1,"0..100",true],["PreD",2,"1..100",false],["Level",2,"0..150",true],["Tail",2,"OFF|ON",false]]],
+      "room": ["Room", "Reverb de ambiente pequeno.", [["Decay",1,"1..30",true],["Tone",1,"0..10",false],["Mix",1,"0..100",true],["PreD",2,"1..100",false],["Level",2,"0..150",true],["Tail",2,"OFF|ON",false]]],
+      "plate": ["Plate", "Reverb de placa.", [["PreD",1,"1..200",false],["Decay",1,"0..100",true],["Mix",1,"0..100",true],["Color",2,"0..100",true],["LoDMP",2,"0..100",true],["HiDMP",2,"0..100",true],["Tail",3,"OFF|ON",false],["Level",3,"0..150",true]]],
+      "spring63": ["Spring63", "Reverb de mola modelado numa unidade Fender de 1963.", [["DWELL",1,"0..100",true],["MIXER",1,"0..100",true],["TONE",1,"0..100",false],["LEVEL",2,"0..150",true]]],
+      "air": ["Air", "Ambiência de sala, dá profundidade.", [["Size",1,"1..100",false],["Tone",1,"0..10",false],["Mix",1,"0..100",true],["Ref",2,"0..10",true],["Level",2,"0..150",true],["Tail",2,"OFF|ON",false]]],
+      "modreverb": ["ModReverb", "Reverb com ecos que oscilam.", [["Depth",1,"0..100",false],["Decay",1,"1..30",true],["Mix",1,"0..100",true],["Rate",2,"1..50",true],["Tone",2,"0..10",false],["PreD",2,"1..100",false],["Level",3,"0..150",true],["Tail",3,"OFF|ON",false]]],
+      "particlereverb": ["ParticleR", "Reverb complexo modelado numa unidade Line 6.", [["DWELL",1,"0..100",true],["GAIN",1,"0..100",true],["MODE",1,"STBL|CRTCL|HZD",false],["MIX",2,"0..100",true],["MONO",2,"OFF|ON",false],["Tail",2,"OFF|ON",false]]]
+    }
+  },
+  "templates": {
+    "DRIVE3": [["Gain",1,"0..100",true],["Tone",1,"0..100",false],["Level",1,"0..150",true]],
+    "AMP": [["Gain",1,"0..100",true],["Tube",1,"0..100",false],["Level",1,"0..150",true],["Trebl",2,"0..100",false],["Middl",2,"0..100",false],["Bass",2,"0..100",false],["Prese",3,"0..100",false],["CAB",3,"CAB",false],["OUT",3,"LINE|COMBO FRONT|STACK FRONT|COMBO POWER AMP|STACK POWER AMP",false]]
+  },
+  "tables": {
+    "WAVE30": ["UP 0","UP 1","UP 2","UP 3","UP 4","UP 5","UP 6","UP 7","UP 8","UP 9","DWN 0","DWN 1","DWN 2","DWN 3","DWN 4","DWN 5","DWN 6","DWN 7","DWN 8","DWN 9","TRI 0","TRI 1","TRI 2","TRI 3","TRI 4","TRI 5","TRI 6","TRI 7","TRI 8","TRI 9"],
+    "CAB": ["FD COMBO","DLX-R","FD VIBRO","US BLUES","VX COMBO","VX JMI","BG CRUNCH","MATCH 30","CAR DRIVE","TW ROCK","TONE CITY","HW STACK","TANGERINE","B-BRKR","MS CRUNCH","MS 1959","MS DRIVE","BGN DRIVE","BG DRIVE","DZ DRIVE","ALIEN","REVO-1","OFF"]
+  },
+  "tested": ["znr", "tscream", "bgdrive", "graphiceq", "room"]
+}

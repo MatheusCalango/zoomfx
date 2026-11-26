@@ -1,0 +1,78 @@
+{
+  "id": "delay",
+  "name": "Delay",
+  "category": "delay",
+  "description": "Delay digital longo, até 4000 ms.",
+  "tag": [0, 16, 0, 16],
+  "status": "unverified",
+  "params": [
+    {
+      "name": "Time",
+      "page": 1,
+      "type": "int",
+      "min": 1,
+      "max": 4000,
+      "default": 2000,
+      "pedal": false,
+      "encoding": [[6, 3072, -10], [0, 512, -7], [5, 508, -2], [0, 2, 2], [4, 1, 6]]
+    },
+    {
+      "name": "F.B",
+      "page": 1,
+      "type": "int",
+      "min": 0,
+      "max": 100,
+      "default": 50,
+      "pedal": true,
+      "encoding": [[7, 96, -5], [0, 16, -3], [6, 15, 3]]
+    },
+    {
+      "name": "Mix",
+      "page": 1,
+      "type": "int",
+      "min": 0,
+      "max": 100,
+      "default": 50,
+      "pedal": true,
+      "encoding": [[9, 127, 0]]
+    },
+    {
+      "name": "HiDMP",
+      "page": 2,
+      "type": "int",
+      "min": 0,
+      "max": 10,
+      "default": 5,
+      "pedal": false,
+      "encoding": [[11, 8, -3], [8, 4, 3], [10, 3, 5]]
+    },
+    {
+      "name": "P-P",
+      "page": 2,
+      "type": "enum",
+      "options": ["MONO", "P-P"],
+      "default": "MONO",
+      "pedal": false,
+      "encoding": [[11, 1, 5]]
+    },
+    {
+      "name": "Level",
+      "page": 2,
+      "type": "int",
+      "min": 0,
+      "max": 150,
+      "default": 100,
+      "pedal": true,
+      "encoding": [[13, 248, -3], [8, 4, 1], [12, 3, 5]]
+    },
+    {
+      "name": "Tail",
+      "page": 3,
+      "type": "enum",
+      "options": ["OFF", "ON"],
+      "default": "OFF",
+      "pedal": false,
+      "encoding": [[13, 1, 5]]
+    }
+  ]
+}

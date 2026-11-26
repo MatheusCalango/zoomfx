@@ -1,0 +1,49 @@
+{
+  "id": "comp",
+  "name": "Comp",
+  "category": "dynamics",
+  "description": "Compressor no estilo MXR Dyna Comp.",
+  "tag": [0, 16, 0, 2],
+  "status": "unverified",
+  "params": [
+    {
+      "name": "Sense",
+      "page": 1,
+      "type": "int",
+      "min": 0,
+      "max": 10,
+      "default": 5,
+      "pedal": true,
+      "encoding": [[5, 12, -2], [0, 2, 2], [4, 1, 6]]
+    },
+    {
+      "name": "Tone",
+      "page": 1,
+      "type": "int",
+      "min": 0,
+      "max": 10,
+      "default": 5,
+      "pedal": false,
+      "encoding": [[6, 15, 3]]
+    },
+    {
+      "name": "Level",
+      "page": 1,
+      "type": "int",
+      "min": 0,
+      "max": 150,
+      "default": 100,
+      "pedal": true,
+      "encoding": "max150"
+    },
+    {
+      "name": "ATTCK",
+      "page": 2,
+      "type": "enum",
+      "options": ["Slow", "Fast"],
+      "default": "Slow",
+      "pedal": false,
+      "encoding": [[10, 1, 5]]
+    }
+  ]
+}

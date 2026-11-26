@@ -1,0 +1,70 @@
+{
+  "id": "flanger",
+  "name": "Flanger",
+  "category": "modulation",
+  "description": "Flanger tipo 'jato' modelado num ADA Flanger.",
+  "tag": [64, 64, 1, 12],
+  "status": "unverified",
+  "params": [
+    {
+      "name": "Depth",
+      "page": 1,
+      "type": "int",
+      "min": 0,
+      "max": 100,
+      "default": 50,
+      "pedal": true,
+      "encoding": [[5, 124, -2], [0, 2, 2], [4, 1, 6]]
+    },
+    {
+      "name": "Rate",
+      "page": 1,
+      "type": "int",
+      "min": 0,
+      "max": 50,
+      "default": 25,
+      "pedal": true,
+      "encoding": [[7, 96, -5], [0, 16, -3], [6, 15, 3]]
+    },
+    {
+      "name": "Reso",
+      "page": 1,
+      "type": "int",
+      "min": -10,
+      "max": 10,
+      "default": 0,
+      "pedal": true,
+      "encoding": [[9, 31, 0]]
+    },
+    {
+      "name": "PreD",
+      "page": 2,
+      "type": "int",
+      "min": 0,
+      "max": 50,
+      "default": 25,
+      "pedal": true,
+      "encoding": [[11, 56, -3], [8, 4, 3], [10, 3, 5]]
+    },
+    {
+      "name": "Mix",
+      "page": 2,
+      "type": "int",
+      "min": 0,
+      "max": 100,
+      "default": 50,
+      "pedal": true,
+      "encoding": [[12, 120, -3], [8, 4, 2], [11, 3, 5]]
+    },
+    {
+      "name": "Level",
+      "page": 2,
+      "type": "int",
+      "min": 0,
+      "max": 150,
+      "default": 100,
+      "pedal": true,
+      "encoding": [[13, 248, -3], [8, 4, 1], [12, 3, 5]]
+    }
+  ]
+}

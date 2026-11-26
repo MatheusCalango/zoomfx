@@ -1,0 +1,69 @@
+{
+  "id": "thevibe",
+  "name": "TheVibe",
+  "category": "modulation",
+  "description": "Som de Uni-Vibe.",
+  "tag": [64, 0, 0, 12],
+  "status": "unverified",
+  "params": [
+    {
+      "name": "Speed",
+      "page": 1,
+      "type": "int",
+      "min": 0,
+      "max": 50,
+      "default": 25,
+      "pedal": true,
+      "encoding": [[5, 60, -2], [0, 2, 2], [4, 1, 6]]
+    },
+    {
+      "name": "Depth",
+      "page": 1,
+      "type": "int",
+      "min": 0,
+      "max": 100,
+      "default": 50,
+      "pedal": true,
+      "encoding": [[7, 96, -5], [0, 16, -3], [6, 15, 3]]
+    },
+    {
+      "name": "Bias",
+      "page": 1,
+      "type": "int",
+      "min": 0,
+      "max": 100,
+      "default": 50,
+      "pedal": true,
+      "encoding": [[9, 127, 0]]
+    },
+    {
+      "name": "Wave",
+      "page": 2,
+      "type": "int",
+      "min": 0,
+      "max": 100,
+      "default": 50,
+      "pedal": true,
+      "encoding": [[11, 120, -3], [8, 4, 3], [10, 3, 5]]
+    },
+    {
+      "name": "Mode",
+      "page": 2,
+      "type": "enum",
+      "options": ["VIBRT", "CHORS"],
+      "default": "VIBRT",
+      "pedal": false,
+      "encoding": [[11, 1, 5]]
+    },
+    {
+      "name": "Level",
+      "page": 2,
+      "type": "int",
+      "min": 0,
+      "max": 150,
+      "default": 100,
+      "pedal": true,
+      "encoding": [[13, 248, -3], [8, 4, 1], [12, 3, 5]]
+    }
+  ]
+}

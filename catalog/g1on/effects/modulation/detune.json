@@ -1,0 +1,60 @@
+{
+  "id": "detune",
+  "name": "Detune",
+  "category": "modulation",
+  "description": "Cópia levemente desafinada misturada ao original.",
+  "tag": [0, 0, 1, 12],
+  "status": "unverified",
+  "params": [
+    {
+      "name": "Cent",
+      "page": 1,
+      "type": "int",
+      "min": -25,
+      "max": 25,
+      "default": 0,
+      "pedal": false,
+      "encoding": [[5, 60, -2], [0, 2, 2], [4, 1, 6]]
+    },
+    {
+      "name": "PreD",
+      "page": 1,
+      "type": "int",
+      "min": 0,
+      "max": 50,
+      "default": 25,
+      "pedal": false,
+      "encoding": [[7, 32, -5], [0, 16, -3], [6, 15, 3]]
+    },
+    {
+      "name": "Mix",
+      "page": 1,
+      "type": "int",
+      "min": 0,
+      "max": 100,
+      "default": 50,
+      "pedal": true,
+      "encoding": [[9, 127, 0]]
+    },
+    {
+      "name": "Tone",
+      "page": 2,
+      "type": "int",
+      "min": 0,
+      "max": 10,
+      "default": 5,
+      "pedal": false,
+      "encoding": [[11, 8, -3], [8, 4, 3], [10, 3, 5]]
+    },
+    {
+      "name": "Level",
+      "page": 2,
+      "type": "int",
+      "min": 0,
+      "max": 150,
+      "default": 100,
+      "pedal": true,
+      "encoding": [[12, 248, -3], [8, 4, 2], [11, 3, 5]]
+    }
+  ]
+}

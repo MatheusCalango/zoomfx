@@ -1,0 +1,40 @@
+{
+  "id": "distplus",
+  "name": "Dist+",
+  "category": "drive",
+  "description": "Simulação do MXR Distortion+.",
+  "tag": [64, 0, 0, 6],
+  "status": "unverified",
+  "params": [
+    {
+      "name": "Gain",
+      "page": 1,
+      "type": "int",
+      "min": 0,
+      "max": 100,
+      "default": 50,
+      "pedal": true,
+      "encoding": [[5, 124, -2], [0, 2, 2], [4, 1, 6]]
+    },
+    {
+      "name": "Tone",
+      "page": 1,
+      "type": "int",
+      "min": 0,
+      "max": 100,
+      "default": 50,
+      "pedal": false,
+      "encoding": [[7, 96, -5], [0, 16, -3], [6, 15, 3]]
+    },
+    {
+      "name": "Level",
+      "page": 1,
+      "type": "int",
+      "min": 0,
+      "max": 150,
+      "default": 100,
+      "pedal": true,
+      "encoding": "max150"
+    }
+  ]
+}

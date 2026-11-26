@@ -1,0 +1,69 @@
+{
+  "id": "room",
+  "name": "Room",
+  "category": "reverb",
+  "description": "Reverb de ambiente pequeno.",
+  "tag": [0, 64, 0, 18],
+  "status": "tested",
+  "params": [
+    {
+      "name": "Decay",
+      "page": 1,
+      "type": "int",
+      "min": 1,
+      "max": 30,
+      "default": 15,
+      "pedal": true,
+      "encoding": [[5, 28, -2], [0, 2, 2], [4, 1, 6]]
+    },
+    {
+      "name": "Tone",
+      "page": 1,
+      "type": "int",
+      "min": 0,
+      "max": 10,
+      "default": 5,
+      "pedal": false,
+      "encoding": [[6, 15, 3]]
+    },
+    {
+      "name": "Mix",
+      "page": 1,
+      "type": "int",
+      "min": 0,
+      "max": 100,
+      "default": 50,
+      "pedal": true,
+      "encoding": [[9, 127, 0]]
+    },
+    {
+      "name": "PreD",
+      "page": 2,
+      "type": "int",
+      "min": 1,
+      "max": 100,
+      "default": 50,
+      "pedal": false,
+      "encoding": [[11, 120, -3], [8, 4, 3], [10, 3, 5]]
+    },
+    {
+      "name": "Level",
+      "page": 2,
+      "type": "int",
+      "min": 0,
+      "max": 150,
+      "default": 100,
+      "pedal": true,
+      "encoding": [[12, 248, -3], [8, 4, 2], [11, 3, 5]]
+    },
+    {
+      "name": "Tail",
+      "page": 2,
+      "type": "enum",
+      "options": ["OFF", "ON"],
+      "default": "OFF",
+      "pedal": false,
+      "encoding": [[12, 1, 5]]
+    }
+  ]
+}

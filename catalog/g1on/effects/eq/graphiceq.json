@@ -1,0 +1,80 @@
+{
+  "id": "graphiceq",
+  "name": "GraphicEQ",
+  "category": "eq",
+  "description": "Equalizador gráfico de 6 bandas.",
+  "tag": [0, 32, 0, 4],
+  "status": "tested",
+  "params": [
+    {
+      "name": "160Hz",
+      "page": 1,
+      "type": "int",
+      "min": -12,
+      "max": 12,
+      "default": 0,
+      "pedal": false,
+      "encoding": [[5, 28, -2], [0, 2, 2], [4, 1, 6]]
+    },
+    {
+      "name": "400Hz",
+      "page": 1,
+      "type": "int",
+      "min": -12,
+      "max": 12,
+      "default": 0,
+      "pedal": false,
+      "encoding": [[0, 16, -3], [6, 15, 3]]
+    },
+    {
+      "name": "800Hz",
+      "page": 1,
+      "type": "int",
+      "min": -12,
+      "max": 12,
+      "default": 0,
+      "pedal": false,
+      "encoding": [[9, 31, 0]]
+    },
+    {
+      "name": "3.2kHz",
+      "page": 2,
+      "type": "int",
+      "min": -12,
+      "max": 12,
+      "default": 0,
+      "pedal": false,
+      "encoding": [[11, 24, -3], [8, 4, 3], [10, 3, 5]]
+    },
+    {
+      "name": "6.4kHz",
+      "page": 2,
+      "type": "int",
+      "min": -12,
+      "max": 12,
+      "default": 0,
+      "pedal": false,
+      "encoding": [[12, 24, -3], [8, 4, 2], [11, 3, 5]]
+    },
+    {
+      "name": "12kHz",
+      "page": 2,
+      "type": "int",
+      "min": -12,
+      "max": 12,
+      "default": 0,
+      "pedal": false,
+      "encoding": [[13, 24, -3], [8, 4, 1], [12, 3, 5]]
+    },
+    {
+      "name": "Level",
+      "page": 3,
+      "type": "int",
+      "min": 0,
+      "max": 150,
+      "default": 100,
+      "pedal": true,
+      "encoding": [[14, 248, -3], [8, 4, 0], [13, 3, 5]]
+    }
+  ]
+}

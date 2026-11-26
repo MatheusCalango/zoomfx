@@ -1,0 +1,80 @@
+{
+  "id": "paraeq",
+  "name": "ParaEQ",
+  "category": "eq",
+  "description": "Equalizador paramétrico de 2 bandas.",
+  "tag": [0, 64, 0, 4],
+  "status": "unverified",
+  "params": [
+    {
+      "name": "Freq1",
+      "page": 1,
+      "type": "raw",
+      "min": 0,
+      "max": 31,
+      "default": 0,
+      "note": "codificação desconhecida: valor bruto",
+      "pedal": false,
+      "encoding": [[5, 28, -2], [0, 2, 2], [4, 1, 6]]
+    },
+    {
+      "name": "Q1",
+      "page": 1,
+      "type": "enum",
+      "options": [0.5, 1, 2, 4, 8, 16],
+      "default": 0.5,
+      "pedal": false,
+      "encoding": [[6, 7, 3]]
+    },
+    {
+      "name": "Gain1",
+      "page": 1,
+      "type": "int",
+      "min": -12,
+      "max": 12,
+      "default": 0,
+      "pedal": false,
+      "encoding": [[9, 31, 0]]
+    },
+    {
+      "name": "Freq2",
+      "page": 2,
+      "type": "raw",
+      "min": 0,
+      "max": 31,
+      "default": 0,
+      "note": "codificação desconhecida: valor bruto",
+      "pedal": false,
+      "encoding": [[11, 24, -3], [8, 4, 3], [10, 3, 5]]
+    },
+    {
+      "name": "Q2",
+      "page": 2,
+      "type": "enum",
+      "options": [0.5, 1, 2, 4, 8, 16],
+      "default": 0.5,
+      "pedal": false,
+      "encoding": [[8, 4, 2], [11, 3, 5]]
+    },
+    {
+      "name": "Gain2",
+      "page": 2,
+      "type": "int",
+      "min": -12,
+      "max": 12,
+      "default": 0,
+      "pedal": false,
+      "encoding": [[13, 24, -3], [8, 4, 1], [12, 3, 5]]
+    },
+    {
+      "name": "Level",
+      "page": 3,
+      "type": "int",
+      "min": 0,
+      "max": 150,
+      "default": 100,
+      "pedal": true,
+      "encoding": [[14, 248, -3], [8, 4, 0], [13, 3, 5]]
+    }
+  ]
+}

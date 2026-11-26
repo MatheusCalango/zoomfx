@@ -1,0 +1,89 @@
+{
+  "id": "modreverb",
+  "name": "ModReverb",
+  "category": "reverb",
+  "description": "Reverb com ecos que oscilam.",
+  "tag": [0, 64, 1, 18],
+  "status": "unverified",
+  "params": [
+    {
+      "name": "Depth",
+      "page": 1,
+      "type": "int",
+      "min": 0,
+      "max": 100,
+      "default": 50,
+      "pedal": false,
+      "encoding": [[5, 124, -2], [0, 2, 2], [4, 1, 6]]
+    },
+    {
+      "name": "Decay",
+      "page": 1,
+      "type": "int",
+      "min": 1,
+      "max": 30,
+      "default": 15,
+      "pedal": true,
+      "encoding": [[0, 16, -3], [6, 15, 3]]
+    },
+    {
+      "name": "Mix",
+      "page": 1,
+      "type": "int",
+      "min": 0,
+      "max": 100,
+      "default": 50,
+      "pedal": true,
+      "encoding": [[9, 127, 0]]
+    },
+    {
+      "name": "Rate",
+      "page": 2,
+      "type": "int",
+      "min": 1,
+      "max": 50,
+      "default": 25,
+      "pedal": true,
+      "encoding": [[11, 56, -3], [8, 4, 3], [10, 3, 5]]
+    },
+    {
+      "name": "Tone",
+      "page": 2,
+      "type": "int",
+      "min": 0,
+      "max": 10,
+      "default": 5,
+      "pedal": false,
+      "encoding": [[12, 8, -3], [8, 4, 2], [11, 3, 5]]
+    },
+    {
+      "name": "PreD",
+      "page": 2,
+      "type": "int",
+      "min": 1,
+      "max": 100,
+      "default": 50,
+      "pedal": false,
+      "encoding": [[13, 120, -3], [8, 4, 1], [12, 3, 5]]
+    },
+    {
+      "name": "Level",
+      "page": 3,
+      "type": "int",
+      "min": 0,
+      "max": 150,
+      "default": 100,
+      "pedal": true,
+      "encoding": [[14, 248, -3], [8, 4, 0], [13, 3, 5]]
+    },
+    {
+      "name": "Tail",
+      "page": 3,
+      "type": "enum",
+      "options": ["OFF", "ON"],
+      "default": "OFF",
+      "pedal": false,
+      "encoding": [[14, 1, 5]]
+    }
+  ]
+}

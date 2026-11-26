@@ -1,0 +1,89 @@
+{
+  "id": "carbondelay",
+  "name": "CarbonDly",
+  "category": "delay",
+  "description": "Delay analógico no estilo MXR, com modulação.",
+  "tag": [64, 96, 1, 16],
+  "status": "unverified",
+  "params": [
+    {
+      "name": "DELAY",
+      "page": 1,
+      "type": "int",
+      "min": 19,
+      "max": 581,
+      "default": 300,
+      "pedal": true,
+      "encoding": [[0, 512, -7], [5, 508, -2], [0, 2, 2], [4, 1, 6]]
+    },
+    {
+      "name": "REGEN",
+      "page": 1,
+      "type": "int",
+      "min": 0,
+      "max": 100,
+      "default": 50,
+      "pedal": true,
+      "encoding": [[7, 96, -5], [0, 16, -3], [6, 15, 3]]
+    },
+    {
+      "name": "MIX",
+      "page": 1,
+      "type": "int",
+      "min": 0,
+      "max": 100,
+      "default": 50,
+      "pedal": true,
+      "encoding": [[9, 127, 0]]
+    },
+    {
+      "name": "MOD",
+      "page": 2,
+      "type": "enum",
+      "options": ["OFF", "ON"],
+      "default": "OFF",
+      "pedal": false,
+      "encoding": [[10, 1, 5]]
+    },
+    {
+      "name": "WIDTH",
+      "page": 2,
+      "type": "int",
+      "min": 0,
+      "max": 50,
+      "default": 25,
+      "pedal": false,
+      "encoding": [[12, 56, -3], [8, 4, 2], [11, 3, 5]]
+    },
+    {
+      "name": "SPEED",
+      "page": 2,
+      "type": "int",
+      "min": 0,
+      "max": 50,
+      "default": 25,
+      "pedal": true,
+      "encoding": [[13, 56, -3], [8, 4, 1], [12, 3, 5]]
+    },
+    {
+      "name": "Tail",
+      "page": 3,
+      "type": "enum",
+      "options": ["OFF", "ON"],
+      "default": "OFF",
+      "pedal": false,
+      "encoding": [[13, 1, 5]]
+    },
+    {
+      "name": "Sync",
+      "page": 3,
+      "type": "raw",
+      "min": 0,
+      "max": 15,
+      "default": 0,
+      "note": "codificação desconhecida: valor bruto",
+      "pedal": false,
+      "encoding": [[15, 8, -3], [8, 4, -1], [14, 3, 5]]
+    }
+  ]
+}

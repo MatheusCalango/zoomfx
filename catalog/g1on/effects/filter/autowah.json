@@ -1,0 +1,39 @@
+{
+  "id": "autowah",
+  "name": "AutoWah",
+  "category": "filter",
+  "description": "Wah que varia com a intensidade da palhetada.",
+  "tag": [64, 32, 0, 4],
+  "status": "unverified",
+  "params": [
+    {
+      "name": "Sense",
+      "page": 1,
+      "type": "enum",
+      "options": [-10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+      "default": 1,
+      "pedal": true,
+      "encoding": [[5, 28, -2], [0, 2, 2], [4, 1, 6]]
+    },
+    {
+      "name": "Reso",
+      "page": 1,
+      "type": "int",
+      "min": 0,
+      "max": 10,
+      "default": 5,
+      "pedal": true,
+      "encoding": [[6, 15, 3]]
+    },
+    {
+      "name": "Level",
+      "page": 1,
+      "type": "int",
+      "min": 0,
+      "max": 150,
+      "default": 100,
+      "pedal": true,
+      "encoding": "max150"
+    }
+  ]
+}

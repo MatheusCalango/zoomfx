@@ -1,0 +1,15 @@
+{
+  "$schema": "../schema/patch.schema.json",
+  "format": "zoomfx-patch/1",
+  "device": "g1on",
+  "name": "HEAVY SOLO",
+  "description": "Variação do HEAVY para solo: mais ganho e médio, delay no lugar do reverb.",
+  "level": null,
+  "chain": [
+    { "effect": "ZNR",       "params": { "THRSH": 10, "DETCT": "GtrIn" } },
+    { "effect": "T Scream",  "params": { "Gain": 0, "Tone": 55, "Level": 130 } },
+    { "effect": "BG DRIVE",  "params": { "Gain": 65, "Tube": 55, "Level": 90, "Trebl": 60, "Middl": 60, "Bass": 55, "Prese": 45, "OUT": "COMBO FRONT" } },
+    { "effect": "GraphicEQ", "params": { "160Hz": 1, "400Hz": -1, "800Hz": 2, "3.2kHz": 2, "6.4kHz": -2, "12kHz": 0 } },
+    { "effect": "Delay",     "params": { "Time": 350, "F.B": 20, "Mix": 15, "HiDMP": 5, "P-P": "MONO", "Tail": "ON" } }
+  ]
+}

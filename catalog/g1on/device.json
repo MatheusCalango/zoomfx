@@ -1,0 +1,39 @@
+{
+  "id": "g1on",
+  "name": "Zoom G1on / G1Xon",
+  "description": "Família G1on (mesmo DSP e mesmo formato de patch). Protocolo não documentado pela Zoom; baseado na engenharia reversa do projeto sysex_tones/g1on.",
+  "midi": {
+    "manufacturer_id": 82,
+    "models": {
+      "99": {"name": "G1on", "status": "tested-by-sysex_tones"},
+      "100": {"name": "G1Xon", "status": "tested"}
+    },
+    "commands": {
+      "editor_on": [80],
+      "editor_off": [81],
+      "request_current_patch": [41],
+      "current_patch": [40],
+      "request_patch": [9, 0, 0],
+      "patch": [8, 0, 0],
+      "store_patch": [50, 1, 0, 0, "SLOT", 0, 0, 0, 0, 0]
+    },
+    "notes": {
+      "store_patch": "Formato do comando de gravação da MS-50G; usado com --store.",
+      "editor_off": "Ao sair do modo editor, a pedaleira descarta o buffer de edição e volta ao patch gravado."
+    }
+  },
+  "patch": {
+    "size": 128,
+    "max_effects": 5,
+    "effect_slots": [[0, 20], [20, 41], [41, 61], [61, 82], [82, 102]],
+    "effect_count_bytes": [96, 103],
+    "level_byte": 105,
+    "name_offset": 116,
+    "name_skip": [120],
+    "name_length": 10
+  },
+  "slots": {
+    "banks": "ABCDEFGHIJ",
+    "per_bank": 10
+  }
+}

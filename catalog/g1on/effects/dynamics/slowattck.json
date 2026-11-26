@@ -1,0 +1,40 @@
+{
+  "id": "slowattck",
+  "name": "SlowATTCK",
+  "category": "dynamics",
+  "description": "Suaviza o ataque de cada nota (efeito 'violino').",
+  "tag": [64, 0, 0, 2],
+  "status": "unverified",
+  "params": [
+    {
+      "name": "Time",
+      "page": 1,
+      "type": "int",
+      "min": 1,
+      "max": 50,
+      "default": 25,
+      "pedal": true,
+      "encoding": [[5, 60, -2], [0, 2, 2], [4, 1, 6]]
+    },
+    {
+      "name": "Curve",
+      "page": 1,
+      "type": "int",
+      "min": 0,
+      "max": 10,
+      "default": 5,
+      "pedal": true,
+      "encoding": [[6, 15, 3]]
+    },
+    {
+      "name": "Level",
+      "page": 1,
+      "type": "int",
+      "min": 0,
+      "max": 150,
+      "default": 100,
+      "pedal": true,
+      "encoding": "max150"
+    }
+  ]
+}

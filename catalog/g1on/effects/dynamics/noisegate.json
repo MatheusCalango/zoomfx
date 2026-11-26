@@ -1,0 +1,30 @@
+{
+  "id": "noisegate",
+  "name": "NoiseGate",
+  "category": "dynamics",
+  "description": "Noise gate que corta o som nas pausas.",
+  "tag": [64, 64, 0, 2],
+  "status": "unverified",
+  "params": [
+    {
+      "name": "THRSH",
+      "page": 1,
+      "type": "int",
+      "min": 1,
+      "max": 25,
+      "default": 13,
+      "pedal": true,
+      "encoding": [[5, 28, -2], [0, 2, 2], [4, 1, 6]]
+    },
+    {
+      "name": "Level",
+      "page": 1,
+      "type": "int",
+      "min": 0,
+      "max": 150,
+      "default": 100,
+      "pedal": true,
+      "encoding": [[7, 224, -5], [0, 16, -3], [6, 15, 3]]
+    }
+  ]
+}

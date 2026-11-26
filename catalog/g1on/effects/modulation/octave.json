@@ -1,0 +1,70 @@
+{
+  "id": "octave",
+  "name": "Octave",
+  "category": "modulation",
+  "description": "Adiciona uma e duas oitavas abaixo.",
+  "tag": [0, 32, 2, 12],
+  "status": "unverified",
+  "params": [
+    {
+      "name": "Oct1",
+      "page": 1,
+      "type": "int",
+      "min": 0,
+      "max": 100,
+      "default": 50,
+      "pedal": true,
+      "encoding": [[5, 124, -2], [0, 2, 2], [4, 1, 6]]
+    },
+    {
+      "name": "Oct2",
+      "page": 1,
+      "type": "int",
+      "min": 0,
+      "max": 100,
+      "default": 50,
+      "pedal": true,
+      "encoding": [[7, 96, -5], [0, 16, -3], [6, 15, 3]]
+    },
+    {
+      "name": "Dry",
+      "page": 1,
+      "type": "int",
+      "min": 0,
+      "max": 100,
+      "default": 50,
+      "pedal": true,
+      "encoding": [[9, 127, 0]]
+    },
+    {
+      "name": "Chara",
+      "page": 2,
+      "type": "int",
+      "min": 0,
+      "max": 100,
+      "default": 50,
+      "pedal": false,
+      "encoding": [[11, 120, -3], [8, 4, 3], [10, 3, 5]]
+    },
+    {
+      "name": "Tone",
+      "page": 2,
+      "type": "int",
+      "min": 0,
+      "max": 10,
+      "default": 5,
+      "pedal": false,
+      "encoding": [[12, 8, -3], [8, 4, 2], [11, 3, 5]]
+    },
+    {
+      "name": "Level",
+      "page": 2,
+      "type": "int",
+      "min": 0,
+      "max": 150,
+      "default": 100,
+      "pedal": true,
+      "encoding": [[13, 248, -3], [8, 4, 1], [12, 3, 5]]
+    }
+  ]
+}

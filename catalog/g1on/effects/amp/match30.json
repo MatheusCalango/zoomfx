@@ -1,0 +1,99 @@
+{
+  "id": "match30",
+  "name": "MATCH 30",
+  "category": "amp",
+  "description": "Matchless DC-30 (canal 1).",
+  "tag": [64, 96, 0, 8],
+  "status": "unverified",
+  "params": [
+    {
+      "name": "Gain",
+      "page": 1,
+      "type": "int",
+      "min": 0,
+      "max": 100,
+      "default": 50,
+      "pedal": true,
+      "encoding": [[5, 124, -2], [0, 2, 2], [4, 1, 6]]
+    },
+    {
+      "name": "Tube",
+      "page": 1,
+      "type": "int",
+      "min": 0,
+      "max": 100,
+      "default": 50,
+      "pedal": false,
+      "encoding": [[7, 96, -5], [0, 16, -3], [6, 15, 3]]
+    },
+    {
+      "name": "Level",
+      "page": 1,
+      "type": "int",
+      "min": 0,
+      "max": 150,
+      "default": 100,
+      "pedal": true,
+      "encoding": "max150"
+    },
+    {
+      "name": "Trebl",
+      "page": 2,
+      "type": "int",
+      "min": 0,
+      "max": 100,
+      "default": 50,
+      "pedal": false,
+      "encoding": [[11, 120, -3], [8, 4, 3], [10, 3, 5]]
+    },
+    {
+      "name": "Middl",
+      "page": 2,
+      "type": "int",
+      "min": 0,
+      "max": 100,
+      "default": 50,
+      "pedal": false,
+      "encoding": [[12, 120, -3], [8, 4, 2], [11, 3, 5]]
+    },
+    {
+      "name": "Bass",
+      "page": 2,
+      "type": "int",
+      "min": 0,
+      "max": 100,
+      "default": 50,
+      "pedal": false,
+      "encoding": [[13, 120, -3], [8, 4, 1], [12, 3, 5]]
+    },
+    {
+      "name": "Prese",
+      "page": 3,
+      "type": "int",
+      "min": 0,
+      "max": 100,
+      "default": 50,
+      "pedal": false,
+      "encoding": [[14, 120, -3], [8, 4, 0], [13, 3, 5]]
+    },
+    {
+      "name": "CAB",
+      "page": 3,
+      "type": "enum",
+      "options": ["FD COMBO", "DLX-R", "FD VIBRO", "US BLUES", "VX COMBO", "VX JMI", "BG CRUNCH", "MATCH 30", "CAR DRIVE", "TW ROCK", "TONE CITY", "HW STACK", "TANGERINE", "B-BRKR", "MS CRUNCH", "MS 1959", "MS DRIVE", "BGN DRIVE", "BG DRIVE", "DZ DRIVE", "ALIEN", "REVO-1", "OFF"],
+      "default": null,
+      "note": "opcional; se omitido, usa a caixa do próprio amp",
+      "pedal": false,
+      "encoding": "cab"
+    },
+    {
+      "name": "OUT",
+      "page": 3,
+      "type": "enum",
+      "options": ["LINE", "COMBO FRONT", "STACK FRONT", "COMBO POWER AMP", "STACK POWER AMP"],
+      "default": "LINE",
+      "pedal": false,
+      "encoding": [[19, 7, 1]]
+    }
+  ]
+}

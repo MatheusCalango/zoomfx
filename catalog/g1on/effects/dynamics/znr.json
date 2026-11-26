@@ -1,0 +1,39 @@
+{
+  "id": "znr",
+  "name": "ZNR",
+  "category": "dynamics",
+  "description": "Redução de ruído da Zoom: corta o ruído nas pausas.",
+  "tag": [64, 32, 0, 2],
+  "status": "tested",
+  "params": [
+    {
+      "name": "THRSH",
+      "page": 1,
+      "type": "int",
+      "min": 1,
+      "max": 25,
+      "default": 13,
+      "pedal": true,
+      "encoding": [[5, 28, -2], [0, 2, 2], [4, 1, 6]]
+    },
+    {
+      "name": "DETCT",
+      "page": 1,
+      "type": "enum",
+      "options": ["GtrIn", "EfxIn"],
+      "default": "GtrIn",
+      "pedal": false,
+      "encoding": [[6, 1, 3]]
+    },
+    {
+      "name": "Level",
+      "page": 1,
+      "type": "int",
+      "min": 0,
+      "max": 150,
+      "default": 100,
+      "pedal": true,
+      "encoding": "max150"
+    }
+  ]
+}

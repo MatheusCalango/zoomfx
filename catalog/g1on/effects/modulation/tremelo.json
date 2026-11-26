@@ -1,0 +1,49 @@
+{
+  "id": "tremelo",
+  "name": "Tremolo",
+  "category": "modulation",
+  "description": "Varia o volume num ritmo constante.",
+  "tag": [0, 16, 0, 12],
+  "status": "unverified",
+  "params": [
+    {
+      "name": "Depth",
+      "page": 1,
+      "type": "int",
+      "min": 0,
+      "max": 100,
+      "default": 50,
+      "pedal": true,
+      "encoding": [[5, 124, -2], [0, 2, 2], [4, 1, 6]]
+    },
+    {
+      "name": "Rate",
+      "page": 1,
+      "type": "int",
+      "min": 0,
+      "max": 50,
+      "default": 25,
+      "pedal": true,
+      "encoding": [[7, 96, -5], [0, 16, -3], [6, 15, 3]]
+    },
+    {
+      "name": "Level",
+      "page": 1,
+      "type": "int",
+      "min": 0,
+      "max": 150,
+      "default": 100,
+      "pedal": true,
+      "encoding": "max150"
+    },
+    {
+      "name": "Wave",
+      "page": 2,
+      "type": "enum",
+      "options": ["UP 0", "UP 1", "UP 2", "UP 3", "UP 4", "UP 5", "UP 6", "UP 7", "UP 8", "UP 9", "DWN 0", "DWN 1", "DWN 2", "DWN 3", "DWN 4", "DWN 5", "DWN 6", "DWN 7", "DWN 8", "DWN 9", "TRI 0", "TRI 1", "TRI 2", "TRI 3", "TRI 4", "TRI 5", "TRI 6", "TRI 7", "TRI 8", "TRI 9"],
+      "default": "UP 0",
+      "pedal": true,
+      "encoding": [[11, 24, -3], [8, 4, 3], [10, 3, 5]]
+    }
+  ]
+}

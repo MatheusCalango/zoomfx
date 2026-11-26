@@ -1,0 +1,70 @@
+{
+  "id": "seqfilter",
+  "name": "SeqFLTR",
+  "category": "filter",
+  "description": "Filtro sequencial no estilo Z.Vex Seek-Wah.",
+  "tag": [0, 96, 1, 4],
+  "status": "unverified",
+  "params": [
+    {
+      "name": "Step",
+      "page": 1,
+      "type": "int",
+      "min": 2,
+      "max": 8,
+      "default": 5,
+      "pedal": false,
+      "encoding": [[5, 4, -2], [0, 2, 2], [4, 1, 6]]
+    },
+    {
+      "name": "PTTRN",
+      "page": 1,
+      "type": "int",
+      "min": 1,
+      "max": 8,
+      "default": 4,
+      "pedal": false,
+      "encoding": [[6, 7, 3]]
+    },
+    {
+      "name": "Speed",
+      "page": 1,
+      "type": "int",
+      "min": 1,
+      "max": 50,
+      "default": 25,
+      "pedal": true,
+      "encoding": [[9, 127, 0]]
+    },
+    {
+      "name": "Shape",
+      "page": 2,
+      "type": "int",
+      "min": 0,
+      "max": 10,
+      "default": 5,
+      "pedal": false,
+      "encoding": [[11, 8, -3], [8, 4, 3], [10, 3, 5]]
+    },
+    {
+      "name": "Reso",
+      "page": 2,
+      "type": "int",
+      "min": 0,
+      "max": 10,
+      "default": 5,
+      "pedal": true,
+      "encoding": [[12, 8, -3], [8, 4, 2], [11, 3, 5]]
+    },
+    {
+      "name": "Level",
+      "page": 2,
+      "type": "int",
+      "min": 0,
+      "max": 150,
+      "default": 100,
+      "pedal": true,
+      "encoding": [[13, 248, -3], [8, 4, 1], [12, 3, 5]]
+    }
+  ]
+}

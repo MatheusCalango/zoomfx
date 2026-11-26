@@ -1,0 +1,50 @@
+{
+  "id": "spring63",
+  "name": "Spring63",
+  "category": "reverb",
+  "description": "Reverb de mola modelado numa unidade Fender de 1963.",
+  "tag": [64, 0, 1, 18],
+  "status": "unverified",
+  "params": [
+    {
+      "name": "DWELL",
+      "page": 1,
+      "type": "int",
+      "min": 0,
+      "max": 100,
+      "default": 50,
+      "pedal": true,
+      "encoding": [[5, 124, -2], [0, 2, 2], [4, 1, 6]]
+    },
+    {
+      "name": "MIXER",
+      "page": 1,
+      "type": "int",
+      "min": 0,
+      "max": 100,
+      "default": 50,
+      "pedal": true,
+      "encoding": [[7, 96, -5], [0, 16, -3], [6, 15, 3]]
+    },
+    {
+      "name": "TONE",
+      "page": 1,
+      "type": "int",
+      "min": 0,
+      "max": 100,
+      "default": 50,
+      "pedal": false,
+      "encoding": [[9, 127, 0]]
+    },
+    {
+      "name": "LEVEL",
+      "page": 2,
+      "type": "int",
+      "min": 0,
+      "max": 150,
+      "default": 100,
+      "pedal": true,
+      "encoding": [[11, 248, -3], [8, 4, 3], [10, 3, 5]]
+    }
+  ]
+}

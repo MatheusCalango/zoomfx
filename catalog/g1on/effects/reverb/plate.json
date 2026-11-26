@@ -1,0 +1,89 @@
+{
+  "id": "plate",
+  "name": "Plate",
+  "category": "reverb",
+  "description": "Reverb de placa.",
+  "tag": [0, 32, 1, 18],
+  "status": "unverified",
+  "params": [
+    {
+      "name": "PreD",
+      "page": 1,
+      "type": "int",
+      "min": 1,
+      "max": 200,
+      "default": 100,
+      "pedal": false,
+      "encoding": [[5, 252, -2], [0, 2, 2], [4, 1, 6]]
+    },
+    {
+      "name": "Decay",
+      "page": 1,
+      "type": "int",
+      "min": 0,
+      "max": 100,
+      "default": 50,
+      "pedal": true,
+      "encoding": [[7, 96, -5], [0, 16, -3], [6, 15, 3]]
+    },
+    {
+      "name": "Mix",
+      "page": 1,
+      "type": "int",
+      "min": 0,
+      "max": 100,
+      "default": 50,
+      "pedal": true,
+      "encoding": [[9, 127, 0]]
+    },
+    {
+      "name": "Color",
+      "page": 2,
+      "type": "int",
+      "min": 0,
+      "max": 100,
+      "default": 50,
+      "pedal": true,
+      "encoding": [[11, 120, -3], [8, 4, 3], [10, 3, 5]]
+    },
+    {
+      "name": "LoDMP",
+      "page": 2,
+      "type": "int",
+      "min": 0,
+      "max": 100,
+      "default": 50,
+      "pedal": true,
+      "encoding": [[12, 120, -3], [8, 4, 2], [11, 3, 5]]
+    },
+    {
+      "name": "HiDMP",
+      "page": 2,
+      "type": "int",
+      "min": 0,
+      "max": 100,
+      "default": 50,
+      "pedal": true,
+      "encoding": [[13, 120, -3], [8, 4, 1], [12, 3, 5]]
+    },
+    {
+      "name": "Tail",
+      "page": 3,
+      "type": "enum",
+      "options": ["OFF", "ON"],
+      "default": "OFF",
+      "pedal": false,
+      "encoding": [[13, 1, 5]]
+    },
+    {
+      "name": "Level",
+      "page": 3,
+      "type": "int",
+      "min": 0,
+      "max": 150,
+      "default": 100,
+      "pedal": true,
+      "encoding": [[15, 248, -3], [8, 4, -1], [14, 3, 5]]
+    }
+  ]
+}

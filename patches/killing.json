@@ -1,0 +1,14 @@
+{
+  "$schema": "../schema/patch.schema.json",
+  "format": "zoomfx-patch/1",
+  "device": "g1on",
+  "name": "KILLING",
+  "description": "Killing in the Name (RATM), afinação drop D. Pouco ganho, muito médio, gravação seca. Flanger desligado: ligue só na intro. O Whammy (PDL MnPit) ainda não é suportado pelo catálogo.",
+  "level": null,
+  "chain": [
+    { "effect": "ZNR",       "params": { "THRSH": 5, "DETCT": "GtrIn" } },
+    { "effect": "MS DRIVE",  "params": { "Gain": 38, "Tube": 40, "Level": 85, "Trebl": 60, "Middl": 75, "Bass": 50, "Prese": 60, "OUT": "COMBO FRONT" } },
+    { "effect": "GraphicEQ", "params": { "160Hz": 0, "400Hz": 1, "800Hz": 3, "3.2kHz": 1, "6.4kHz": -1, "12kHz": 0 } },
+    { "effect": "Flanger",   "on": false, "params": { "Depth": 70, "Rate": 10, "Reso": 5, "PreD": 10, "Mix": 50 } }
+  ]
+}

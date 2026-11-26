@@ -1,0 +1,60 @@
+{
+  "id": "stereocho",
+  "name": "StereoCho",
+  "category": "modulation",
+  "description": "Chorus estéreo de timbre limpo.",
+  "tag": [0, 64, 1, 12],
+  "status": "unverified",
+  "params": [
+    {
+      "name": "Depth",
+      "page": 1,
+      "type": "int",
+      "min": 0,
+      "max": 100,
+      "default": 50,
+      "pedal": true,
+      "encoding": [[5, 124, -2], [0, 2, 2], [4, 1, 6]]
+    },
+    {
+      "name": "Rate",
+      "page": 1,
+      "type": "int",
+      "min": 1,
+      "max": 50,
+      "default": 25,
+      "pedal": true,
+      "encoding": [[7, 32, -5], [0, 16, -3], [6, 15, 3]]
+    },
+    {
+      "name": "Mix",
+      "page": 1,
+      "type": "int",
+      "min": 0,
+      "max": 100,
+      "default": 50,
+      "pedal": true,
+      "encoding": [[9, 127, 0]]
+    },
+    {
+      "name": "Tone",
+      "page": 2,
+      "type": "int",
+      "min": 0,
+      "max": 10,
+      "default": 5,
+      "pedal": false,
+      "encoding": [[11, 8, -3], [8, 4, 3], [10, 3, 5]]
+    },
+    {
+      "name": "Level",
+      "page": 2,
+      "type": "int",
+      "min": 0,
+      "max": 150,
+      "default": 100,
+      "pedal": true,
+      "encoding": [[12, 248, -3], [8, 4, 2], [11, 3, 5]]
+    }
+  ]
+}

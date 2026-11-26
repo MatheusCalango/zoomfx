@@ -1,0 +1,60 @@
+{
+  "id": "160comp",
+  "name": "160 Comp",
+  "category": "dynamics",
+  "description": "Compressor no estilo dbx 160A.",
+  "tag": [0, 106, 0, 2],
+  "status": "unverified",
+  "params": [
+    {
+      "name": "THRSH",
+      "page": 1,
+      "type": "int",
+      "min": -60,
+      "max": 0,
+      "default": -30,
+      "pedal": false,
+      "encoding": [[5, 60, -2], [0, 2, 2], [4, 1, 6]]
+    },
+    {
+      "name": "Ratio",
+      "page": 1,
+      "type": "raw",
+      "min": 0,
+      "max": 127,
+      "default": 0,
+      "note": "codificação desconhecida: valor bruto",
+      "pedal": false,
+      "encoding": [[7, 96, -5], [0, 16, -3], [6, 15, 3]]
+    },
+    {
+      "name": "Gain",
+      "page": 1,
+      "type": "int",
+      "min": 0,
+      "max": 20,
+      "default": 10,
+      "pedal": false,
+      "encoding": [[9, 31, 0]]
+    },
+    {
+      "name": "Knee",
+      "page": 2,
+      "type": "enum",
+      "options": ["Hard", "Soft"],
+      "default": "Hard",
+      "pedal": false,
+      "encoding": [[10, 1, 5]]
+    },
+    {
+      "name": "Level",
+      "page": 2,
+      "type": "int",
+      "min": 0,
+      "max": 150,
+      "default": 100,
+      "pedal": true,
+      "encoding": [[12, 248, -3], [8, 4, 2], [11, 3, 5]]
+    }
+  ]
+}

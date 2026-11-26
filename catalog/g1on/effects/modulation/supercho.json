@@ -1,0 +1,59 @@
+{
+  "id": "supercho",
+  "name": "SuperCho",
+  "category": "modulation",
+  "description": "Modelo do BOSS CH-1 Super Chorus.",
+  "tag": [64, 32, 1, 12],
+  "status": "unverified",
+  "params": [
+    {
+      "name": "E.LVL",
+      "page": 1,
+      "type": "int",
+      "min": 0,
+      "max": 120,
+      "default": 60,
+      "pedal": true,
+      "encoding": [[5, 124, -2], [0, 2, 2], [4, 1, 6]]
+    },
+    {
+      "name": "Rate",
+      "page": 1,
+      "type": "int",
+      "min": 0,
+      "max": 100,
+      "default": 50,
+      "pedal": true,
+      "encoding": [[7, 96, -5], [0, 16, -3], [6, 15, 3]]
+    },
+    {
+      "name": "Depth",
+      "page": 1,
+      "type": "int",
+      "min": 0,
+      "max": 100,
+      "default": 50,
+      "pedal": true,
+      "encoding": [[9, 127, 0]]
+    },
+    {
+      "name": "EQ",
+      "page": 2,
+      "type": "int",
+      "min": 0,
+      "max": 100,
+      "default": 50,
+      "pedal": false,
+      "encoding": [[11, 120, -3], [8, 4, 3], [10, 3, 5]]
+    },
+    {
+      "name": "Mode",
+      "page": 2,
+      "type": "enum",
+      "options": ["MONO", "STR"],
+      "default": "MONO",
+      "pedal": false,
+      "encoding": [[11, 1, 5]]
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "id": "particlereverb",
+  "name": "ParticleR",
+  "category": "reverb",
+  "description": "Reverb complexo modelado numa unidade Line 6.",
+  "tag": [0, 32, 3, 18],
+  "status": "unverified",
+  "params": [
+    {
+      "name": "DWELL",
+      "page": 1,
+      "type": "int",
+      "min": 0,
+      "max": 100,
+      "default": 50,
+      "pedal": true,
+      "encoding": [[5, 124, -2], [0, 2, 2], [4, 1, 6]]
+    },
+    {
+      "name": "GAIN",
+      "page": 1,
+      "type": "int",
+      "min": 0,
+      "max": 100,
+      "default": 50,
+      "pedal": true,
+      "encoding": [[7, 96, -5], [0, 16, -3], [6, 15, 3]]
+    },
+    {
+      "name": "MODE",
+      "page": 1,
+      "type": "enum",
+      "options": ["STBL", "CRTCL", "HZD"],
+      "default": "STBL",
+      "pedal": false,
+      "encoding": [[9, 3, 0]]
+    },
+    {
+      "name": "MIX",
+      "page": 2,
+      "type": "int",
+      "min": 0,
+      "max": 100,
+      "default": 50,
+      "pedal": true,
+      "encoding": [[11, 120, -3], [8, 4, 3], [10, 3, 5]]
+    },
+    {
+      "name": "MONO",
+      "page": 2,
+      "type": "enum",
+      "options": ["OFF", "ON"],
+      "default": "OFF",
+      "pedal": false,
+      "encoding": [[11, 1, 5]]
+    },
+    {
+      "name": "Tail",
+      "page": 2,
+      "type": "enum",
+      "options": ["OFF", "ON"],
+      "default": "OFF",
+      "pedal": false,
+      "encoding": [[12, 1, 5]]
+    }
+  ]
+}

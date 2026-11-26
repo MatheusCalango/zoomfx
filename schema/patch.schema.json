@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/MatheusCalango/zoomfx/schema/patch.schema.json",
+  "title": "zoomfx patch",
+  "description": "Patch da Zoom G1on/G1Xon. Os nomes e faixas dos parâmetros são conferidos pelo catálogo (zoomfx validate).",
+  "type": "object",
+  "required": [
+    "format",
+    "name",
+    "chain"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "format": {
+      "const": "zoomfx-patch/1"
+    },
+    "device": {
+      "type": "string",
+      "default": "g1on"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 10,
+      "pattern": "^[ -~]+$",
+      "description": "Até 10 caracteres ASCII."
+    },
+    "description": {
+      "type": "string"
+    },
+    "level": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0,
+      "maximum": 127,
+      "description": "Patch level; null mantém o da memória de destino."
+    },
+    "chain": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "required": [
+          "effect"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "effect": {
+            "type": "string",
+            "description": "Id (bgdrive) ou nome da tela (BG DRIVE)."
+          },
+          "on": {
+            "type": "boolean",
+            "default": true
+          },
+          "params": {
+            "type": "object",
+            "additionalProperties": {
+              "type": [
+                "integer",
+                "number",
+                "string"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}

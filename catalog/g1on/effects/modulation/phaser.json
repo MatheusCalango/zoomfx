@@ -1,0 +1,39 @@
+{
+  "id": "phaser",
+  "name": "Phaser",
+  "category": "modulation",
+  "description": "Variação de fase.",
+  "tag": [0, 96, 0, 12],
+  "status": "unverified",
+  "params": [
+    {
+      "name": "Rate",
+      "page": 1,
+      "type": "int",
+      "min": 1,
+      "max": 50,
+      "default": 25,
+      "pedal": true,
+      "encoding": [[5, 124, -2], [0, 2, 2], [4, 1, 6]]
+    },
+    {
+      "name": "Color",
+      "page": 1,
+      "type": "enum",
+      "options": ["4 STG", "8 STG", "inv 4", "inv 8"],
+      "default": "4 STG",
+      "pedal": false,
+      "encoding": [[6, 3, 3]]
+    },
+    {
+      "name": "Level",
+      "page": 1,
+      "type": "int",
+      "min": 0,
+      "max": 150,
+      "default": 100,
+      "pedal": true,
+      "encoding": "max150"
+    }
+  ]
+}

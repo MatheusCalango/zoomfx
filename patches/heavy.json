@@ -1,0 +1,15 @@
+{
+  "$schema": "../schema/patch.schema.json",
+  "format": "zoomfx-patch/1",
+  "device": "g1on",
+  "name": "HEAVY",
+  "description": "Distorção pesada genérica: boost no Dual Rectifier, EQ em V suave e um pouco de ambiência.",
+  "level": null,
+  "chain": [
+    { "effect": "ZNR",       "on": true, "params": { "THRSH": 10, "DETCT": "GtrIn", "Level": 100 } },
+    { "effect": "T Scream",  "on": true, "params": { "Gain": 0, "Tone": 55, "Level": 130 } },
+    { "effect": "BG DRIVE",  "on": true, "params": { "Gain": 60, "Tube": 55, "Level": 80, "Trebl": 60, "Middl": 50, "Bass": 55, "Prese": 45, "OUT": "COMBO FRONT" } },
+    { "effect": "GraphicEQ", "on": true, "params": { "160Hz": 2, "400Hz": -2, "800Hz": 0, "3.2kHz": 2, "6.4kHz": -2, "12kHz": 0, "Level": 100 } },
+    { "effect": "Room",      "on": true, "params": { "Decay": 6, "Tone": 4, "Mix": 8, "PreD": 15, "Level": 100, "Tail": "OFF" } }
+  ]
+}

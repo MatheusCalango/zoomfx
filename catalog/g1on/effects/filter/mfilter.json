@@ -1,0 +1,87 @@
+{
+  "id": "mfilter",
+  "name": "M-Filter",
+  "category": "filter",
+  "description": "Filtro de envelope no estilo MOOG MF-101.",
+  "tag": [0, 32, 1, 4],
+  "status": "unverified",
+  "params": [
+    {
+      "name": "Freq",
+      "page": 1,
+      "type": "int",
+      "min": 0,
+      "max": 100,
+      "default": 50,
+      "pedal": true,
+      "encoding": [[5, 124, -2], [0, 2, 2], [4, 1, 6]]
+    },
+    {
+      "name": "Sense",
+      "page": 1,
+      "type": "int",
+      "min": 0,
+      "max": 10,
+      "default": 5,
+      "pedal": false,
+      "encoding": [[6, 15, 3]]
+    },
+    {
+      "name": "Reso",
+      "page": 1,
+      "type": "int",
+      "min": 0,
+      "max": 10,
+      "default": 5,
+      "pedal": true,
+      "encoding": [[9, 15, 0]]
+    },
+    {
+      "name": "Type",
+      "page": 2,
+      "type": "enum",
+      "options": ["HPF", "BPF", "LPF"],
+      "default": "HPF",
+      "pedal": false,
+      "encoding": [[10, 3, 5]]
+    },
+    {
+      "name": "Chara",
+      "page": 2,
+      "type": "enum",
+      "options": ["2Pole", "4Pole"],
+      "default": "2Pole",
+      "pedal": false,
+      "encoding": [[11, 1, 5]]
+    },
+    {
+      "name": "VLCTY",
+      "page": 2,
+      "type": "enum",
+      "options": ["Fast", "Slow"],
+      "default": "Fast",
+      "pedal": false,
+      "encoding": [[12, 1, 5]]
+    },
+    {
+      "name": "Bal",
+      "page": 3,
+      "type": "int",
+      "min": 0,
+      "max": 100,
+      "default": 50,
+      "pedal": true,
+      "encoding": [[14, 120, -3], [8, 4, 0], [13, 3, 5]]
+    },
+    {
+      "name": "Level",
+      "page": 3,
+      "type": "int",
+      "min": 0,
+      "max": 150,
+      "default": 100,
+      "pedal": true,
+      "encoding": [[15, 248, -3], [8, 4, -1], [14, 3, 5]]
+    }
+  ]
+}

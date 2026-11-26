@@ -1,0 +1,15 @@
+{
+  "$schema": "../schema/patch.schema.json",
+  "format": "zoomfx-patch/1",
+  "device": "g1on",
+  "name": "THRASH",
+  "description": "Thrash anos 80 (Metallica): Tube Screamer empurrando o MS DRIVE, médios cortados.",
+  "level": null,
+  "chain": [
+    { "effect": "ZNR",       "params": { "THRSH": 8, "DETCT": "GtrIn" } },
+    { "effect": "T Scream",  "params": { "Gain": 5, "Tone": 60, "Level": 120 } },
+    { "effect": "MS DRIVE",  "params": { "Gain": 55, "Tube": 50, "Level": 80, "Trebl": 65, "Middl": 45, "Bass": 60, "Prese": 50, "OUT": "COMBO FRONT" } },
+    { "effect": "GraphicEQ", "params": { "160Hz": 2, "400Hz": 0, "800Hz": -3, "3.2kHz": 2, "6.4kHz": -1, "12kHz": 0 } },
+    { "effect": "Room",      "params": { "Decay": 8, "Tone": 4, "Mix": 10, "PreD": 15, "Tail": "OFF" } }
+  ]
+}

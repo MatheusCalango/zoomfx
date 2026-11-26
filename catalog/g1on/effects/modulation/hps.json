@@ -1,0 +1,58 @@
+{
+  "id": "hps",
+  "name": "HPS",
+  "category": "modulation",
+  "description": "Harmonizador que segue escala e tom.",
+  "tag": [64, 0, 2, 12],
+  "status": "unverified",
+  "params": [
+    {
+      "name": "Scale",
+      "page": 1,
+      "type": "enum",
+      "options": ["-6", "-5", "-4", "-3", "-m", "m", "3", "4", "5", "6"],
+      "default": "-6",
+      "pedal": false,
+      "encoding": [[5, 12, -2], [0, 2, 2], [4, 1, 6]]
+    },
+    {
+      "name": "Key",
+      "page": 1,
+      "type": "enum",
+      "options": ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"],
+      "default": "C",
+      "pedal": false,
+      "encoding": [[6, 15, 3]]
+    },
+    {
+      "name": "Mix",
+      "page": 1,
+      "type": "int",
+      "min": 0,
+      "max": 100,
+      "default": 50,
+      "pedal": true,
+      "encoding": [[9, 127, 0]]
+    },
+    {
+      "name": "Tone",
+      "page": 2,
+      "type": "int",
+      "min": 0,
+      "max": 10,
+      "default": 5,
+      "pedal": false,
+      "encoding": [[11, 8, -3], [8, 4, 3], [10, 3, 5]]
+    },
+    {
+      "name": "Level",
+      "page": 2,
+      "type": "int",
+      "min": 0,
+      "max": 150,
+      "default": 100,
+      "pedal": true,
+      "encoding": [[12, 248, -3], [8, 4, 2], [11, 3, 5]]
+    }
+  ]
+}
