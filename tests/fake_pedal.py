@@ -3,8 +3,8 @@
     python3 tests/fake_pedal.py [--no-store]    # imprime o caminho do dispositivo
 
 Responde: identificação, modo editor, troca de patch (C0), leitura de memória (09),
-leitura/escrita do buffer de edição (29/28) e store (32). Com --no-store, o
-comando de store é ignorado (simula a pedaleira que exige salvar no painel);
+leitura/escrita do buffer de edição (29/28), gravação direta (08) e store (32).
+Com --no-store, os comandos de gravação são ignorados (simula a pedaleira que exige salvar no painel);
 nesse caso mande SIGUSR1 para o processo para "apertar o botão de salvar".
 """
 
@@ -48,6 +48,8 @@ class Fake:
             return [0xF0, 0x52, 0x00, MODEL, 0x28] + self.buf + [0xF7]
         elif cmd == 0x28:
             self.buf = msg[5:5 + SIZE]
+        elif cmd == 0x08 and self.store_works:          # gravação direta (mensagem de leitura devolvida)
+            self.mem[msg[7]] = msg[10:10 + SIZE]
         elif cmd == 0x32 and self.store_works:
             self.mem[msg[8]] = list(self.buf)
         return None

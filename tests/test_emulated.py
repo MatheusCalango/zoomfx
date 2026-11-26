@@ -42,6 +42,7 @@ class TestEmulated(unittest.TestCase):
         code, out = self.run_cli("push", src, "--slot", "C4", "--store")
         self.assertEqual(code, 0, out)
         self.assertIn("Gravado em C4", out)
+        self.assertIn("write_patch", out)
         self.assertEqual(len(os.listdir("backups")), 1)
         code, out = self.run_cli("pull", "--slot", "C4", "-o", "c4.json")
         self.assertEqual(code, 0, out)

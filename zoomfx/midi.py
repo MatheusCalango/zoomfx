@@ -133,10 +133,20 @@ class Pedal:
         r = self.read_sysex(self._zoom(self._command("patch"))[:-1])
         if not r:
             return None
-        payload = r[4 + len(self.cmd["patch"]):-1]       # [slot, ?, ?, 128 bytes]
+        payload = r[4 + len(self.cmd["patch"]):-1]       # [slot, h1, h2, 128 bytes]
         if len(payload) < 3 + self.size or payload[0] != slot:
             return None
+        self.patch_header = payload[1:3]
         return payload[3:3 + self.size]
+
+    def write_patch(self, slot, patch):
+        """EXPERIMENTAL: grava direto na memória, devolvendo a mensagem de leitura (0x08)."""
+        header = getattr(self, "patch_header", None)
+        if header is None:
+            if self.read_patch(slot) is None:
+                raise MidiError("não consegui ler %s antes de gravar" % self.catalog.slot_name(slot))
+            header = self.patch_header
+        self.send(self._zoom(self._command("write_patch", slot) + list(header) + list(patch)), pause=1.0)
 
     def read_current(self):
         """Lê o buffer de edição (o patch que está soando)."""

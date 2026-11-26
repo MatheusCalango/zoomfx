@@ -160,7 +160,7 @@ Cada efeito é um JSON:
 - **Suposições a confirmar na tela:**
   - a regra "bruto = valor − mínimo" nos parâmetros cuja escala não começa em 0 (ZNR THRSH, Room Decay/PreD, bandas do EQ etc.);
   - a ordem das opções do OUT;
-  - o comando de gravação (`--store`), que veio da MS-50G.
+  - a gravação automática (`--store`): o comando da MS-50G (`0x32`) **não funciona** na G1Xon 1.21. O programa agora tenta antes a gravação direta (devolver a mensagem de leitura `0x08` com o número da memória) e confere o resultado. Se nenhum dos dois funcionar, ele pede o salvamento no painel e mostra o que ficou diferente.
 
 Para confirmar um efeito: grave um patch com ele, compare com a tela da pedaleira e, se bater, mude o `status` para `tested`. Outra forma: monte um patch na pedaleira, rode `zoomfx pull` e compare com o que a tela mostra.
 

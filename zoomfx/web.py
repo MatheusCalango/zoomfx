@@ -162,9 +162,13 @@ class App:
         if not ok:
             pedal.__exit__(None, None, None)
             raise MidiError("a pedaleira devolveu um patch diferente do enviado; nada foi gravado")
-        if store and service.try_store(pedal, slot, new):
-            pedal.__exit__(None, None, None)
-            return {"state": "stored", "slot": name, "backup": os.path.basename(backup_path)}
+        if store:
+            method = service.try_store(pedal, slot, new)
+            if method:
+                pedal.__exit__(None, None, None)
+                return {"state": "stored", "slot": name, "method": method,
+                        "backup": os.path.basename(backup_path)}
+            service.load_to_buffer(pedal, slot, new)     # recarrega para o salvamento manual
         # mantém a conexão aberta: sair do modo editor descartaria o patch
         self.pending = {"pedal": pedal, "slot": slot, "patch": new}
         return {"state": "awaiting_save", "slot": name, "backup": os.path.basename(backup_path),
@@ -203,12 +207,13 @@ class App:
         if not self.pending:
             raise MidiError("não há gravação esperando confirmação")
         p = self.pending
-        ok = service.is_stored(p["pedal"], p["slot"], p["patch"])
+        stored = p["pedal"].read_patch(p["slot"])
         name = self.cat.slot_name(p["slot"])
-        if ok:
+        if stored == p["patch"]:
             self._close_pending()
             return {"state": "stored", "slot": name}
-        return {"state": "awaiting_save", "slot": name, "not_yet": True}
+        return {"state": "awaiting_save", "slot": name, "not_yet": True,
+                "diff": service.diff(self.cat, p["patch"], stored)}
 
     def cancel(self, _body):
         self._close_pending()

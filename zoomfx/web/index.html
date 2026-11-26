@@ -716,7 +716,10 @@ async function confirmSaved() {
       showMessages([["ok", `Conferido: ${r.slot} gravado.`]]);
       if (S.pending && S.pending.doc) updateSlotEntry(r.slot, S.pending.doc);
       S.pending = null;
-    } else toast(`${r.slot} ainda não está com o patch novo. Salve na pedaleira e confira de novo.`, 6000);
+    } else {
+      toast(`${r.slot} ainda não ficou igual ao enviado. Salve na pedaleira e confira de novo.`, 6000);
+      showMessages((r.diff || []).map((t) => ["warn", t]));
+    }
   } catch (e) { fail(e); }
 }
 

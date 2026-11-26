@@ -50,5 +50,33 @@ def is_stored(pedal, slot, new):
 
 
 def try_store(pedal, slot, new):
+    """Tenta gravar sozinho. Retorna o nome do método que funcionou, ou None."""
+    pedal.write_patch(slot, new)
+    if is_stored(pedal, slot, new):
+        return "write_patch"
     pedal.store(slot)
-    return is_stored(pedal, slot, new)
+    if is_stored(pedal, slot, new):
+        return "store_patch"
+    return None
+
+
+def diff(catalog, sent, stored):
+    """Descreve em poucas linhas o que difere entre o enviado e o gravado."""
+    from . import patch as P
+    if stored is None:
+        return ["não consegui ler a memória de volta"]
+    idx = [i for i, (a, b) in enumerate(zip(sent, stored)) if a != b]
+    lines = ["%d byte(s) diferente(s): %s" % (len(idx), ", ".join(
+        "%d: %02x→%02x" % (i, sent[i], stored[i]) for i in idx[:12]))]
+    a, b = P.decode(sent, catalog), P.decode(stored, catalog)
+    if a["name"] != b["name"]:
+        lines.append("nome: %r → %r" % (a["name"], b["name"]))
+    for i, (x, y) in enumerate(zip(a["chain"], b["chain"]), 1):
+        if x != y:
+            lines.append("efeito %d: %s → %s" % (i, x.get("effect"), y.get("effect")))
+            for k in sorted(set(x.get("params", {})) | set(y.get("params", {}))):
+                if x.get("params", {}).get(k) != y.get("params", {}).get(k):
+                    lines.append("   %s: %s → %s" % (k, x["params"].get(k), y["params"].get(k)))
+    if len(a["chain"]) != len(b["chain"]):
+        lines.append("número de efeitos: %d → %d" % (len(a["chain"]), len(b["chain"])))
+    return lines

@@ -36,16 +36,21 @@ def _write_and_store(pedal, cat, slot, new, store):
     name = cat.slot_name(slot)
     print("\nPatch carregado em %s (ainda não gravado)." % name)
     if store:
-        if service.try_store(pedal, slot, new):
-            print("Gravado em %s e conferido." % name)
+        method = service.try_store(pedal, slot, new)
+        if method:
+            print("Gravado em %s e conferido (método: %s)." % (name, method))
             return True
-        print("O store automático não confirmou.")
+        print("A gravação automática não confirmou.")
+        ok, _ = service.load_to_buffer(pedal, slot, new)   # recarrega o buffer para o salvamento manual
     print("Salve agora na pedaleira, em %s. NÃO troque de patch antes." % name)
     input("Depois de salvar, aperte Enter para eu conferir... ")
-    if service.is_stored(pedal, slot, new):
+    stored = pedal.read_patch(slot)
+    if stored == new:
         print("Conferido: %s gravado." % name)
         return True
-    print("%s ainda não está com o patch novo. Tente de novo com --store." % name)
+    print("%s não ficou igual ao enviado:" % name)
+    for line in service.diff(cat, new, stored):
+        print("  " + line)
     return False
 
 
