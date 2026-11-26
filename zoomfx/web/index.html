@@ -100,7 +100,13 @@ aside { border-right: 1px solid var(--line); padding: 1rem; overflow: auto; disp
 .files .row button.quiet { width: auto; padding: .2rem .45rem; font-size: .8rem; }
 .side-head { display: flex; justify-content: space-between; align-items: center; gap: .5rem; }
 .side-head button { white-space: nowrap; }
-.slots { max-height: 46vh; overflow: auto; margin-top: .3rem; }
+.slots { max-height: calc(100vh - 420px); min-height: 8rem; overflow: auto; margin-top: .3rem; }
+.filebtns { display: grid; grid-template-columns: 1fr 1fr; gap: .4rem; }
+.filebtns button { font-size: .88rem; padding: .4rem .3rem; white-space: nowrap; }
+.curfile { color: var(--muted); font-size: .82rem; margin: .5rem 0 0; overflow-wrap: anywhere; }
+.slots-msg { color: var(--muted); font-size: .85rem; }
+.files .slots-msg button { width: auto; display: inline-block; margin-top: .2rem;
+  background: var(--raised); border: 1px solid var(--line); padding: .4rem .8rem; }
 .slots li button { display: grid; grid-template-columns: 2.4rem 1fr; column-gap: .4rem; align-items: baseline; }
 .slots .sl { font-family: var(--lcdfont); color: var(--lcd); font-size: .95rem; }
 .slots .sn { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -234,25 +240,20 @@ dialog::backdrop { background: rgba(5,8,12,.65); }
 <div class="body">
   <aside>
     <section>
-      <div class="side-head"><h2>Memórias</h2><button class="quiet" id="btnSlots">Ler todas</button></div>
+      <div class="side-head"><h2>Memórias</h2><button class="quiet" id="btnSlots">Atualizar</button></div>
       <input type="text" id="slotFilter" placeholder="Filtrar por nome ou efeito" aria-label="Filtrar memórias" hidden>
       <ul class="files slots" id="slotList"></ul>
     </section>
     <section>
-      <div class="side-head"><h2>Arquivos</h2><button class="quiet" id="btnNew">Novo</button></div>
-      <ul class="files" id="fileList"></ul>
-    </section>
-    <section>
       <h2>Arquivo</h2>
-      <div style="display:flex; gap:.4rem; flex-wrap:wrap">
+      <div class="filebtns">
+        <button id="btnNew">Novo</button>
+        <button id="btnOpen">Abrir…</button>
         <button id="btnSave">Salvar</button>
         <button id="btnSaveAs">Salvar como…</button>
       </div>
+      <p class="curfile" id="curFile"></p>
       <p class="dirty" id="dirty" hidden>Alterações não salvas</p>
-    </section>
-    <section>
-      <div class="side-head"><h2>Backups</h2><button class="quiet" id="btnRefreshBk">Atualizar</button></div>
-      <ul class="files" id="bkList"></ul>
     </section>
   </aside>
 
@@ -263,6 +264,14 @@ dialog::backdrop { background: rgba(5,8,12,.65); }
     <div id="bannerSlot"></div>
   </main>
 </div>
+
+<dialog id="opener" aria-label="Abrir patch">
+  <div class="dlg-head">
+    <strong style="flex:1">Abrir patch da pasta patches/</strong>
+    <button class="quiet" id="openClose">Fechar</button>
+  </div>
+  <ul class="fxlist" id="openList"></ul>
+</dialog>
 
 <dialog id="picker" aria-label="Escolher efeito">
   <div class="dlg-head">
@@ -336,7 +345,7 @@ function paramValue(item, p) {
 }
 
 /* ---------- render ---------- */
-function renderAll() { renderHeader(); renderChain(); renderEditor(); renderFiles(); }
+function renderAll() { renderHeader(); renderChain(); renderEditor(); renderFileInfo(); }
 
 function renderHeader() {
   $("#pname").value = S.doc.name || "";
@@ -406,7 +415,7 @@ function renderEditor() {
     box.replaceChildren(el("div", { class: "empty-state" },
       el("p", {}, el("strong", {}, "Nenhum efeito na cadeia. ")),
       el("p", {}, "Use “Adicionar efeito” para montar até 5 efeitos, na ordem em que o sinal passa da guitarra para o amp."),
-      el("p", {}, "Também dá para abrir um patch salvo na lista ao lado ou ler uma memória da pedaleira.")));
+      el("p", {}, "Também dá para clicar numa memória da pedaleira, na lateral, ou abrir um arquivo em “Abrir…”.")));
     return;
   }
   const fx = S.fx[item.effect] || findFx(item.effect);
@@ -534,22 +543,25 @@ function showMessages(list) {
 }
 
 /* ---------- arquivos ---------- */
-async function refreshFiles() {
-  const r = await api("patches/list");
-  S.files = r.patches; renderFiles();
+function renderFileInfo() {
+  $("#curFile").textContent = S.file ? "patches/" + S.file
+    : (S.fromSlot ? `Lido da memória ${S.fromSlot} (ainda não salvo em arquivo)` : "Patch novo, ainda não salvo");
 }
 
-function renderFiles() {
-  $("#fileList").replaceChildren(...(S.files || []).map((f) => el("li", {},
-    el("button", { "aria-current": String(f.file === S.file), title: f.description,
-                   onclick: () => openFile(f.file) },
-      f.name || f.file, el("small", {}, f.file)))));
-  if (!(S.files || []).length) $("#fileList").append(el("li", { style: "color:var(--muted); font-size:.85rem" }, "Nenhum patch na pasta."));
+async function openDialog() {
+  try {
+    const r = await api("patches/list");
+    $("#openList").replaceChildren(...r.patches.map((f) => el("li", {},
+      el("button", { style: "--cat: var(--line)", onclick: () => { $("#opener").close(); openFile(f.file); } },
+        el("strong", {}, f.name || f.file), el("small", {}, f.file), el("small", {}, f.description)))));
+    if (!r.patches.length) $("#openList").append(el("li", { style: "color:var(--muted)" }, "A pasta patches/ está vazia. Monte um patch e use “Salvar”."));
+    $("#opener").showModal();
+  } catch (e) { fail(e); }
 }
 
 async function openFile(file) {
   if (S.dirty && !confirm("Descartar as alterações não salvas?")) return;
-  try { loadDoc((await api("patches/get", { file })).doc, file); } catch (e) { fail(e); }
+  try { S.fromSlot = null; loadDoc((await api("patches/get", { file })).doc, file); } catch (e) { fail(e); }
 }
 
 function suggestFile() {
@@ -565,36 +577,23 @@ async function save(asNew = false) {
   }
   try {
     const r = await api("patches/save", { file, doc: S.doc });
-    S.file = r.saved; setDirty(false);
+    S.file = r.saved; setDirty(false); renderFileInfo();
     toast("Salvo em patches/" + r.saved);
-    await refreshFiles();
   } catch (e) { fail(e); }
-}
-
-async function refreshBackups() {
-  try {
-    const r = await api("backups/list");
-    $("#bkList").replaceChildren(...r.backups.slice(0, 40).map((b) => el("li", {},
-      el("div", { class: "row" },
-        el("button", { title: "Abrir no editor", onclick: () => openBackup(b.file) }, b.name || "?",
-          el("small", {}, b.file.replace(/^backup_/, "").replace(/\.syx$/, ""))),
-        el("button", { class: "quiet", title: "Gravar este backup na memória selecionada no visor",
-                       onclick: () => restore(b.file) }, "Restaurar")))));
-    if (!r.backups.length) $("#bkList").append(el("li", { style: "color:var(--muted); font-size:.85rem" }, "Os backups aparecem aqui depois do primeiro envio."));
-  } catch (e) { fail(e); }
-}
-
-async function openBackup(file) {
-  if (S.dirty && !confirm("Descartar as alterações não salvas?")) return;
-  try { loadDoc((await api("backups/open", { file })).doc, null); setDirty(true); } catch (e) { fail(e); }
 }
 
 /* ---------- memórias da pedaleira ---------- */
 function renderSlots() {
   const box = $("#slotList");
   if (!S.slots) {
-    box.replaceChildren(el("li", { style: "color:var(--muted); font-size:.85rem" },
-      "Clique em “Ler todas” para ver o que está gravado em cada posição, de A0 a J9."));
+    if (S.slotsError) {
+      box.replaceChildren(el("li", { class: "slots-msg" },
+        el("p", {}, "Não consegui ler a pedaleira: " + S.slotsError),
+        el("p", {}, "Ligue a G1Xon no USB, feche o ToneLib e tente de novo."),
+        el("button", { onclick: readSlots }, "Tentar de novo")));
+    } else {
+      box.replaceChildren(el("li", { class: "slots-msg" }, "Lendo as memórias da pedaleira…"));
+    }
     return;
   }
   const q = $("#slotFilter").value.trim().toLowerCase();
@@ -610,21 +609,32 @@ function renderSlots() {
 }
 
 async function readSlots() {
-  if (S.pending) return toast("Termine a gravação em andamento antes de ler as memórias.");
+  if (S.pending) { toast("Termine a gravação em andamento antes de ler as memórias."); return false; }
   const btn = $("#btnSlots");
   btn.disabled = true; btn.textContent = "Lendo…";
+  S.slots = null; S.slotsError = null; renderSlots();
   try {
     S.slots = (await api("pedal/list")).slots;
     $("#slotFilter").hidden = false;
+    $("#dot").className = "dot on";
+    $("#connText").textContent = "Pedaleira conectada";
+    return true;
+  } catch (e) {
+    S.slotsError = e.message;
+    $("#dot").className = "dot bad";
+    $("#connText").textContent = "Pedaleira não encontrada";
+    return false;
+  } finally {
+    btn.disabled = false; btn.textContent = "Atualizar";
     renderSlots();
-  } catch (e) { fail(e); }
-  finally { btn.disabled = false; btn.textContent = "Ler todas"; }
+  }
 }
 
 function openSlot(it) {
   if (!it.doc) return toast(`Não consegui ler ${it.slot}.`);
   if (S.dirty && !confirm(`Abrir ${it.slot} vai substituir o patch aberto, que tem alterações não salvas. Continuar?`)) return;
   $("#slot").value = it.slot;
+  S.fromSlot = it.slot;
   loadDoc(JSON.parse(JSON.stringify(it.doc)), null);
   renderSlots();
 }
@@ -660,8 +670,9 @@ async function pull() {
   if (S.dirty && !confirm(`Ler ${slot} vai substituir o patch aberto, que tem alterações não salvas. Continuar?`)) return;
   try {
     const r = await api("pedal/pull", { slot });
-    loadDoc(r.doc, null); setDirty(true);
-    toast(`Lido da memória ${slot}. Salve para guardar como arquivo.`);
+    S.fromSlot = slot;
+    loadDoc(r.doc, null);
+    toast(`Lido da memória ${slot}.`);
   } catch (e) { fail(e); }
 }
 
@@ -674,19 +685,7 @@ async function push() {
   catch (e) { fail(e); }
 }
 
-async function restore(file) {
-  const slot = $("#slot").value;
-  if (!confirm(`Gravar o backup ${file} na memória ${slot}?\nO conteúdo atual de ${slot} também vai para os backups.`)) return;
-  S.lastSent = null;   // restore: a lista é relida abaixo
-  try {
-    handleWrite(await api("pedal/restore", { file, slot, store: $("#autostore").checked }));
-    if (S.slots && !S.pending) readSlots();
-  }
-  catch (e) { fail(e); }
-}
-
 function handleWrite(r) {
-  refreshBackups();
   S.pending = r.state === "awaiting_save" ? { slot: r.slot, doc: S.lastSent } : null;
   if (r.state === "stored") {
     $("#bannerSlot").replaceChildren();
@@ -735,11 +734,12 @@ $("#level").addEventListener("change", (ev) => {
 });
 $("#btnNew").addEventListener("click", () => {
   if (S.dirty && !confirm("Descartar as alterações não salvas?")) return;
-  loadDoc(blankDoc(), null); renderFiles();
+  S.fromSlot = null; loadDoc(blankDoc(), null);
 });
+$("#btnOpen").addEventListener("click", openDialog);
+$("#openClose").addEventListener("click", () => $("#opener").close());
 $("#btnSave").addEventListener("click", () => save(false));
 $("#btnSaveAs").addEventListener("click", () => save(true));
-$("#btnRefreshBk").addEventListener("click", refreshBackups);
 $("#btnSlots").addEventListener("click", readSlots);
 $("#slotFilter").addEventListener("input", renderSlots);
 $("#slot").addEventListener("change", renderSlots);
@@ -758,12 +758,13 @@ window.addEventListener("beforeunload", (ev) => { if (S.dirty) { ev.preventDefau
     S.catalog = await api("catalog");
     for (const f of S.catalog.effects) S.fx[f.id] = f;
     $("#slot").replaceChildren(...S.catalog.slots.map((s) => el("option", {}, s)));
-    $("#slot").value = "A7";
-    await refreshFiles();
-    refreshBackups();
-    renderSlots();
-    if (S.files.length) await openFile(S.files.find((f) => f.file === "heavy.json") ? "heavy.json" : S.files[0].file);
-    else loadDoc(blankDoc());
+    $("#slot").value = S.catalog.slots[0];
+    loadDoc(blankDoc());
+    // lê as memórias ao iniciar e abre a selecionada no visor
+    if (await readSlots()) {
+      const it = S.slots.find((x) => x.slot === $("#slot").value);
+      if (it && it.doc) openSlot(it);
+    }
   } catch (e) { fail(e); }
 })();
 </script>

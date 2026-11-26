@@ -47,13 +47,14 @@ zoomfx ui
 
 Sobe um servidor local em `http://127.0.0.1:8765` e abre o navegador. Rode de dentro da pasta do projeto: a interface usa a pasta `patches/` e salva os backups em `backups/`.
 
-- **Memórias** (barra lateral): "Ler todas" lista as 100 posições da pedaleira, de A0 a J9, com o nome do patch e os efeitos de cada uma. Tem filtro por nome ou efeito, e clicar numa posição abre o patch no editor e seleciona aquela memória no visor.
+- **Memórias** (barra lateral): ao abrir, a interface lê as 100 posições da pedaleira (A0 a J9) e lista cada uma com a posição, o nome do patch e os efeitos que ele usa. A memória selecionada no visor já abre no editor. Tem filtro por nome ou efeito, e clicar numa posição abre aquele patch. "Atualizar" lê tudo de novo. Se a pedaleira não estiver conectada, aparece o motivo e um botão "Tentar de novo".
+- **Arquivo:** Novo, Abrir… (patches da pasta `patches/`), Salvar e Salvar como….
 - **O visor** mostra a memória de destino, o nome do patch e o patch level. O nome é editado direto ali. No level, "do destino" mantém o volume que já está na memória.
 - **A cadeia de sinal** vai da guitarra ao amp, com até 5 pedais. Clique num pedal para editar. O footswitch liga e desliga o efeito. Para reordenar, arraste ou use Alt+←/→.
 - **Os parâmetros** ficam nas mesmas páginas 1/2/3 da pedaleira, com slider e campo numérico. "(padrão)" indica um valor que não está no arquivo e vem do catálogo. "voltar ao padrão" tira o valor do arquivo.
 - **Validação** enquanto você edita: erros bloqueiam o envio, e avisos indicam, por exemplo, efeitos ainda não testados.
 - **Ler da memória** e **Enviar para a pedaleira** fazem o mesmo que o `pull` e o `push` da CLI, com backup e conferência. Se a gravação automática não confirmar, uma faixa no rodapé pede para você salvar no pedal e depois clicar em "Já salvei, conferir".
-- **Backups:** abrem no editor ou podem ser restaurados na memória selecionada no visor.
+- **Backups:** continuam sendo salvos em `backups/` a cada envio. Para restaurar um, use a linha de comando: `zoomfx restore backups/arquivo.syx --slot A7 --store`.
 - **Ctrl+S** salva o arquivo.
 
 O servidor só aceita conexões do próprio computador e exige um token gerado a cada execução. Assim, outro site aberto no navegador não consegue mandar comandos para a pedaleira.

@@ -129,7 +129,7 @@ class Pedal:
 
     def read_patch(self, slot):
         """Lê o patch GRAVADO na memória 'slot'."""
-        self.send(self._zoom(self._command("request_patch") + [slot]))
+        self.send(self._zoom(self._command("request_patch") + [slot]), pause=0)
         r = self.read_sysex(self._zoom(self._command("patch"))[:-1])
         if not r:
             return None
@@ -140,7 +140,7 @@ class Pedal:
 
     def read_current(self):
         """Lê o buffer de edição (o patch que está soando)."""
-        self.send(self._zoom(self._command("request_current_patch")))
+        self.send(self._zoom(self._command("request_current_patch")), pause=0)
         r = self.read_sysex(self._zoom(self._command("current_patch"))[:-1])
         n = 4 + len(self.cmd["current_patch"])
         if not r or len(r) < n + self.size + 1:
