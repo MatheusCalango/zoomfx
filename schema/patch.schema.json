@@ -68,6 +68,17 @@
                 "string"
               ]
             }
+          },
+          "tag": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "description": "Só para efeito \"unknown\": tag lida da pedaleira."
+          },
+          "raw": {
+            "type": "string",
+            "description": "Só para efeito \"unknown\": bytes do efeito em hexadecimal, mantidos como vieram."
           }
         }
       }

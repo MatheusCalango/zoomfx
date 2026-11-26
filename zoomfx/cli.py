@@ -149,6 +149,28 @@ def cmd_restore(args, cat):
         return 0 if _write_and_store(pedal, cat, slot, data, args.store) else 1
 
 
+def cmd_scan(args, cat):
+    """Lê todas as memórias e lista os efeitos que o catálogo não reconhece."""
+    found = {}
+    with _open_pedal(args, cat) as pedal:
+        for s in range(cat.slot_count):
+            data = pedal.read_patch(s)
+            if data is None:
+                continue
+            doc = P.decode(data, cat)
+            for pos, c in enumerate(doc["chain"], 1):
+                if c["effect"] == "unknown":
+                    found.setdefault(tuple(c["tag"]), []).append("%s/%d (%s)" % (cat.slot_name(s), pos, doc["name"]))
+    if not found:
+        print("Todos os efeitos das memórias estão no catálogo.")
+        return
+    print("\nEfeitos fora do catálogo (memória/posição na cadeia):")
+    for tag, where in sorted(found.items()):
+        print("  tag %-20s %s" % (list(tag), ", ".join(where[:6]) + (" …" if len(where) > 6 else "")))
+    print("\nOlhe na pedaleira qual efeito está nessas posições e informe o nome + a tag "
+          "para incluí-lo no catálogo.")
+
+
 def cmd_ui(args, cat):
     from .web import serve
     serve(cat, port=args.port, open_browser=not args.no_browser,
@@ -203,6 +225,9 @@ def main(argv=None):
     s.add_argument("--slot", required=True)
     s.add_argument("--store", action="store_true")
     s.set_defaults(func=cmd_restore)
+
+    s = sub.add_parser("scan", help="lista os efeitos das memórias que o catálogo não conhece")
+    s.set_defaults(func=cmd_scan)
 
     s = sub.add_parser("ui", help="abre a interface no navegador")
     s.add_argument("--port", type=int, default=8765)

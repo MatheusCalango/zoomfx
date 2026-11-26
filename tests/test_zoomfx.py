@@ -3,6 +3,7 @@ import unittest
 
 from zoomfx import patch as P
 from zoomfx.catalog import Catalog, CatalogError
+from zoomfx.codec import set_field
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CAT = Catalog()
@@ -41,8 +42,43 @@ class TestCatalog(unittest.TestCase):
 
 class TestCodec(unittest.TestCase):
     def test_heavy_matches_device_tested_bytes(self):
+        """Mesmos bytes aceitos pela G1Xon, mais a caixa do BG DRIVE (antes não era gravada)."""
+        lay = CAT.layout
+        data, _ = lay.descramble(golden())
+        a, b = lay.slots[2]
+        amp = data[a:b]
+        set_field(amp, "cab", CAT.effect("bgdrive").param("CAB").to_raw("BG DRIVE"))
+        data[a:b] = amp
         doc = P.load(os.path.join(ROOT, "patches", "heavy.json"))
-        self.assertEqual(P.encode(doc, CAT, level_fallback=80), golden())
+        self.assertEqual(P.encode(doc, CAT, level_fallback=80), lay.scramble(data))
+
+    def test_cab_matches_factory_values(self):
+        """Patches de fábrica da G1Xon: DZ DRIVE com CAB bruto 38, REVO-1 com 42."""
+        for amp, expected in (("dzdrive", 38), ("revo1", 42)):
+            doc = {"format": P.FORMAT, "device": "g1on", "name": "C", "level": 80,
+                   "chain": [{"effect": amp}]}
+            data, _ = CAT.layout.descramble(P.encode(doc, CAT))
+            e = data[0:20]
+            self.assertTrue(e[16] & 0x20)
+            self.assertEqual(e[15] & 0x3F, expected)
+            self.assertEqual(P.decode(P.encode(doc, CAT), CAT)["chain"][0]["params"]["CAB"],
+                             CAT.effect(amp).name)
+
+    def test_unknown_effect_is_preserved(self):
+        doc = P.load(os.path.join(ROOT, "patches", "heavy.json"))
+        raw = P.encode(doc, CAT, level_fallback=80)
+        # finge que o T Scream (posição 2) é um efeito desconhecido
+        data, n = CAT.layout.descramble(raw)
+        a, b = CAT.layout.slots[1]
+        data[a + 0] = (data[a + 0] & ~0x40) | 0x40
+        data[a + 1] = (data[a + 1] & 0x05) | 0x7A
+        weird = CAT.layout.scramble(data)
+        back = P.decode(weird, CAT)
+        self.assertEqual(back["chain"][1]["effect"], "unknown")
+        self.assertEqual(P.encode(back, CAT), weird)
+        back["chain"][1]["on"] = False
+        again = P.decode(P.encode(back, CAT), CAT)
+        self.assertFalse(again["chain"][1]["on"])
 
     def test_all_patches_roundtrip(self):
         folder = os.path.join(ROOT, "patches")

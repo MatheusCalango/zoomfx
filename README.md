@@ -73,6 +73,7 @@ O servidor só aceita conexões do próprio computador e exige um token gerado a
 | `zoomfx restore backups/x.syx --slot A7 [--store]` | Devolve um backup para uma memória |
 | `zoomfx export arquivo.json` | Gera um `.syx` sem conectar na pedaleira |
 | `zoomfx ui [--port 8765]` | Abre a interface no navegador |
+| `zoomfx scan` | Lista, por memória, os efeitos que o catálogo ainda não reconhece |
 
 As memórias vão de **A0 a J9** (10 bancos com 10 memórias cada).
 
@@ -153,11 +154,12 @@ Cada efeito é um JSON:
 
 - **Testados numa G1Xon real:** ZNR, T Scream, BG DRIVE, GraphicEQ, Room.
 - **Gerados, mas não testados:** os outros 70 efeitos (dynamics, filter, drive, amp, eq, modulation, delay, reverb).
-- **Ainda não suportados:** os efeitos de pedal da G1Xon (PedalVx, PedalCry, WAH100, PDL Pitch, PDL MnPit), porque a tag deles não é conhecida.
+- **Ainda não suportados:** os efeitos de pedal da G1Xon (PedalVx, PedalCry, WAH100, PDL Pitch, PDL MnPit), porque a tag deles não é conhecida. Quando um patch lido da pedaleira tem um efeito assim, ele aparece como `"effect": "unknown"`, com a `tag` e os bytes originais (`raw`), e é **mantido intacto** quando o patch é reenviado. `zoomfx scan` lista todas essas tags.
+- **CAB dos amps:** o valor gravado é a posição na tabela × 2, confirmado nos patches de fábrica (DZ DRIVE = 38, REVO-1 = 42). Se o patch não informar o CAB, é gravada a caixa do próprio amp.
 - **Parâmetros `raw`:** 160 Comp Ratio, ParaEQ Freq1/Freq2 e CarbonDly Sync.
 - **Suposições a confirmar na tela:**
   - a regra "bruto = valor − mínimo" nos parâmetros cuja escala não começa em 0 (ZNR THRSH, Room Decay/PreD, bandas do EQ etc.);
-  - a ordem das opções do OUT e do CAB;
+  - a ordem das opções do OUT;
   - o comando de gravação (`--store`), que veio da MS-50G.
 
 Para confirmar um efeito: grave um patch com ele, compare com a tela da pedaleira e, se bater, mude o `status` para `tested`. Outra forma: monte um patch na pedaleira, rode `zoomfx pull` e compare com o que a tela mostra.

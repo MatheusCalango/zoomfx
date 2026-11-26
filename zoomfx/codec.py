@@ -23,8 +23,9 @@ def set_field(data, encoding, raw):
             data[8] |= 0x40
         data[9] |= raw & 0x7F
     elif encoding == "cab":
+        # posição na tabela de caixas × 2 (confirmado nos patches de fábrica da G1Xon)
         data[16] |= 0x20
-        data[15] |= raw & 0x3F
+        data[15] |= (raw << 1) & 0x3E
     else:
         for byte, mask, s in encoding:
             data[byte] |= _shift(raw & mask, s)
@@ -35,7 +36,7 @@ def get_field(data, encoding):
     if encoding == "max150":
         return (data[9] & 0x7F) | (0x80 if data[8] & 0x40 else 0)
     if encoding == "cab":
-        return (data[15] & 0x3F) if data[16] & 0x20 else None
+        return ((data[15] & 0x3E) >> 1) if data[16] & 0x20 else None
     raw = 0
     for byte, mask, s in encoding:
         raw |= _shift(data[byte] & _shift(mask, s), -s)
@@ -46,7 +47,7 @@ def field_width(encoding):
     if encoding == "max150":
         return 8
     if encoding == "cab":
-        return 6
+        return 5
     return sum(bin(m).count("1") for _, m, _ in encoding)
 
 

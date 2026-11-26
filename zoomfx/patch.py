@@ -57,6 +57,14 @@ def validate(doc, catalog):
     if len(chain) > catalog.layout.max_effects:
         errors.append("no máximo %d efeitos (o patch tem %d)" % (catalog.layout.max_effects, len(chain)))
     for i, item in enumerate(chain, 1):
+        if item.get("effect") == "unknown":
+            raw = _unknown_bytes(item)
+            if raw is None:
+                errors.append('efeito %d: "unknown" precisa do campo "raw" (bytes lidos da pedaleira)' % i)
+            else:
+                warnings.append("efeito %d: desconhecido (tag %s), será mantido exatamente como veio da pedaleira"
+                                % (i, item.get("tag")))
+            continue
         try:
             eff = catalog.effect(item.get("effect", ""))
         except CatalogError as e:
@@ -74,6 +82,14 @@ def validate(doc, catalog):
     return warnings
 
 
+def _unknown_bytes(item):
+    try:
+        raw = [int(x, 16) for x in str(item.get("raw", "")).split()]
+    except ValueError:
+        return None
+    return raw if len(raw) >= 20 and all(0 <= b < 256 for b in raw) else None
+
+
 def encode(doc, catalog, level_fallback=None):
     """Monta os 128 bytes. 'level' null usa level_fallback (o da memória de destino)."""
     validate(doc, catalog)
@@ -87,6 +103,11 @@ def encode(doc, catalog, level_fallback=None):
         raise PatchError('"level" é null e não há patch de destino para copiar o volume')
     data[lay.level_byte] = level
     for (a, b), item in zip(lay.slots, doc["chain"]):
+        if item["effect"] == "unknown":
+            e = (_unknown_bytes(item) + [0])[:21]
+            e[1] = (e[1] & 0xFE) | (1 if item.get("on", True) else 0)
+            data[a:b] = e[: b - a]
+            continue
         eff = catalog.effect(item["effect"])
         e = [0] * 21
         t0, t1, t2, t4 = eff.tag

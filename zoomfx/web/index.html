@@ -70,7 +70,8 @@ header {
 #pname { font-size: 2.1rem; letter-spacing: .08em; width: 11ch; text-transform: uppercase; }
 #pname::placeholder { color: var(--lcd-dim); text-shadow: none; }
 .lcd .lvl { font-size: .95rem; color: var(--lcd); display: flex; gap: .4rem; align-items: baseline; }
-.lcd .lvl input { width: 3.5ch; font-size: .95rem; border-bottom: 1px dashed var(--lcd-dim); }
+.lcd .lvl input { width: 4.5ch; font-size: .95rem; border-bottom: 1px dashed var(--lcd-dim); -moz-appearance: textfield; }
+.lcd .lvl input::-webkit-inner-spin-button, .lcd .lvl input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
 .lcd .lvl #levelDest { color: var(--lcd); }
 .lcdbtn {
   background: transparent; border: 1px solid var(--lcd-dim); color: var(--lcd-dim); border-radius: 4px;
@@ -382,8 +383,8 @@ function renderChain() {
       ondrop: (ev) => { ev.preventDefault(); move(+ev.dataTransfer.getData("text/plain"), i); },
     },
       el("span", { class: "pos" }, String(i + 1)),
-      el("span", { class: "pname" }, fx ? fx.name : "??? " + item.effect),
-      el("span", { class: "pcat" }, fx ? CAT_NAMES[fx.category] : "fora do catálogo"),
+      el("span", { class: "pname" }, fx ? fx.name : "Desconhecido"),
+      el("span", { class: "pcat" }, fx ? CAT_NAMES[fx.category] : "tag " + JSON.stringify(item.tag || [])),
       fx && fx.status !== "tested" ? el("span", { class: "untested" }, "não testado") : null,
       el("div", { class: "foot" },
         el("span", { class: "led", "aria-hidden": "true" }),
@@ -420,9 +421,15 @@ function renderEditor() {
   }
   const fx = S.fx[item.effect] || findFx(item.effect);
   if (!fx) {
+    const known = item.effect === "unknown" && item.raw;
     box.replaceChildren(el("div", { class: "empty-state" },
-      el("p", {}, `O efeito “${item.effect}” não está no catálogo, então não pode ser editado nem enviado.`),
-      el("button", { onclick: () => removeFx(S.sel) }, "Remover da cadeia")));
+      el("p", {}, el("strong", {}, "Efeito que o catálogo ainda não conhece")),
+      el("p", {}, known
+        ? `Tag ${JSON.stringify(item.tag)}. Os parâmetros dele não podem ser editados aqui, mas ele é mantido exatamente como veio da pedaleira quando você envia o patch. Dá para ligar e desligar pelo footswitch.`
+        : `“${item.effect}” não está no catálogo e não tem os bytes originais, então não pode ser enviado.`),
+      el("p", {}, "Para identificar: veja na pedaleira qual efeito está nesta posição e rode “zoomfx scan” para listar todas as tags desconhecidas."),
+      el("button", { onclick: () => openPicker(S.sel) }, "Trocar efeito"), " ",
+      el("button", { class: "quiet", onclick: () => removeFx(S.sel) }, "Remover da cadeia")));
     return;
   }
   item.effect = fx.id;

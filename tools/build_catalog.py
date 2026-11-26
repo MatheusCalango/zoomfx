@@ -72,8 +72,9 @@ for category, effects in off["categories"].items():
                 p.update(type="raw", min=0, max=(1 << width(enc)) - 1, default=0,
                          note="codificação desconhecida: valor bruto")
             elif spec == "CAB":
-                p.update(type="enum", options=tables["CAB"], default=None,
-                         note="opcional; se omitido, usa a caixa do próprio amp")
+                own = list(off["categories"]["amp"]).index(eid)
+                p.update(type="enum", options=tables["CAB"], default=tables["CAB"][own],
+                         note="padrão: a caixa do próprio amp")
             elif spec in tables:
                 p.update(type="enum", options=tables[spec], default=tables[spec][0])
             elif spec.startswith("values:"):

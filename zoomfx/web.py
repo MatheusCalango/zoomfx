@@ -127,7 +127,7 @@ class App:
             data = pedal.read_patch(slot)
         if data is None:
             raise MidiError("não consegui ler %s" % self.cat.slot_name(slot))
-        doc = P.decode(data, self.cat, full=False)
+        doc = P.decode(data, self.cat)
         doc["description"] = "Lido da memória %s" % self.cat.slot_name(slot)
         return {"doc": doc}
 
@@ -143,12 +143,12 @@ class App:
                 if data is None:
                     item.update(name=None, effects=[], doc=None, error="sem resposta")
                 else:
-                    doc = P.decode(data, self.cat, full=False)
+                    doc = P.decode(data, self.cat)
                     doc["description"] = "Lido da memória %s" % item["slot"]
                     names = []
                     for c in doc["chain"]:
                         if c["effect"] == "unknown":
-                            names.append("?")
+                            names.append("?" + ("" if c["on"] else " (off)"))
                         else:
                             names.append(self.cat.effect(c["effect"]).name + ("" if c["on"] else " (off)"))
                     item.update(name=doc["name"], effects=names, doc=doc)
