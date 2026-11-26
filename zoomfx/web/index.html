@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>zoomfx</title>
+<link rel="icon" href="data:,">
+<style>
+:root {
+  --chassis: #1b212b;
+  --panel: #232b37;
+  --raised: #2d3644;
+  --line: #3b4656;
+  --text: #e4e8ee;
+  --muted: #8d97a7;
+  --lcd-bg: #1e1705;
+  --lcd: #f4b63c;
+  --lcd-dim: #6e5622;
+  --led: #ff4b3e;
+  --led-off: #4b2a27;
+  --warn: #e9b44c;
+  --err: #ff6b5e;
+  --ok: #7cc79a;
+  --c-dynamics: #7fa3c8; --c-filter: #b49fe0; --c-drive: #e2864a; --c-amp: #d6b25a;
+  --c-eq: #8cc9a8; --c-modulation: #6fc3d9; --c-delay: #9db5e8; --c-reverb: #c7a3c9;
+  --sans: "Noto Sans", "Cantarell", "Segoe UI", system-ui, sans-serif;
+  --lcdfont: "DejaVu Sans Mono", "Noto Sans Mono", "Liberation Mono", monospace;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body {
+  background: var(--chassis); color: var(--text);
+  font: 15px/1.45 var(--sans);
+  display: grid; grid-template-rows: auto 1fr; min-height: 100vh;
+}
+button, input, select { font: inherit; color: inherit; }
+button {
+  background: var(--raised); border: 1px solid var(--line); border-radius: 6px;
+  padding: .45rem .8rem; cursor: pointer;
+}
+button:hover { border-color: var(--muted); }
+button.primary { background: var(--lcd); color: #231a04; border-color: var(--lcd); font-weight: 600; }
+button.primary:hover { filter: brightness(1.08); }
+button.quiet { background: transparent; border-color: transparent; color: var(--muted); }
+button.quiet:hover { color: var(--text); border-color: var(--line); }
+button:disabled { opacity: .45; cursor: default; }
+:focus-visible { outline: 2px solid var(--lcd); outline-offset: 2px; }
+input[type=text], input[type=number], select {
+  background: var(--chassis); border: 1px solid var(--line); border-radius: 5px; padding: .35rem .5rem;
+}
+h2 { font-size: .95rem; font-weight: 600; margin: 0 0 .5rem; color: var(--muted); }
+
+/* ---- topo: o visor ---- */
+header {
+  display: flex; flex-wrap: wrap; gap: 1rem 1.5rem; align-items: center;
+  padding: 1rem 1.5rem; background: var(--panel); border-bottom: 1px solid var(--line);
+}
+.lcd {
+  display: flex; align-items: baseline; gap: 1.1rem;
+  background: var(--lcd-bg); border-radius: 6px; padding: .6rem 1rem;
+  box-shadow: inset 0 0 0 2px #000, inset 0 0 22px rgba(244,182,60,.08);
+  font-family: var(--lcdfont); color: var(--lcd); text-shadow: 0 0 6px rgba(244,182,60,.45);
+}
+.lcd select, .lcd input {
+  background: transparent; border: 0; color: var(--lcd); font-family: var(--lcdfont);
+  text-shadow: inherit; padding: 0;
+}
+.lcd select option { background: var(--lcd-bg); }
+#slot { font-size: 1.6rem; width: 3.3ch; }
+#pname { font-size: 2.1rem; letter-spacing: .08em; width: 11ch; text-transform: uppercase; }
+#pname::placeholder { color: var(--lcd-dim); text-shadow: none; }
+.lcd .lvl { font-size: .95rem; color: var(--lcd); display: flex; gap: .4rem; align-items: baseline; }
+.lcd .lvl input { width: 3.5ch; font-size: .95rem; border-bottom: 1px dashed var(--lcd-dim); }
+.lcd .lvl #levelDest { color: var(--lcd); }
+.lcdbtn {
+  background: transparent; border: 1px solid var(--lcd-dim); color: var(--lcd-dim); border-radius: 4px;
+  padding: 0 .4rem; font: .78rem var(--lcdfont); text-shadow: none;
+}
+.lcdbtn:hover { color: var(--lcd); border-color: var(--lcd); }
+.lcd { flex-wrap: wrap; }
+.actions { display: flex; gap: .5rem; align-items: center; margin-left: auto; flex-wrap: wrap; }
+.conn { display: flex; align-items: center; gap: .45rem; color: var(--muted); font-size: .9rem; }
+.dot { width: .6rem; height: .6rem; border-radius: 50%; background: var(--led-off); }
+.dot.on { background: var(--ok); box-shadow: 0 0 6px var(--ok); }
+.dot.bad { background: var(--err); }
+.store-opt { color: var(--muted); font-size: .9rem; display: flex; gap: .35rem; align-items: center; }
+
+/* ---- corpo ---- */
+.body { display: grid; grid-template-columns: 250px 1fr; min-height: 0; }
+aside { border-right: 1px solid var(--line); padding: 1rem; overflow: auto; display: flex; flex-direction: column; gap: 1.4rem; }
+.files { list-style: none; margin: 0; padding: 0; }
+.files li button {
+  width: 100%; text-align: left; background: transparent; border: 0; border-radius: 5px;
+  padding: .4rem .5rem; display: block;
+}
+.files li button:hover { background: var(--raised); }
+.files li button[aria-current="true"] { background: var(--raised); box-shadow: inset 3px 0 0 var(--lcd); }
+.files small { display: block; color: var(--muted); font-size: .78rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.files .row { display: flex; align-items: center; }
+.files .row button.quiet { width: auto; padding: .2rem .45rem; font-size: .8rem; }
+.side-head { display: flex; justify-content: space-between; align-items: center; }
+
+main { padding: 1.4rem 1.6rem 3rem; overflow: auto; }
+
+/* ---- cadeia de sinal ---- */
+.chain {
+  display: flex; align-items: stretch; gap: 0; overflow-x: auto; padding: .4rem 0 1rem;
+}
+.jack { align-self: center; color: var(--muted); font-size: .85rem; padding: 0 .6rem; white-space: nowrap; }
+.cable { align-self: center; width: 22px; min-width: 14px; height: 3px; background: var(--line); }
+.pedal {
+  position: relative; width: 132px; min-width: 132px; min-height: 168px;
+  background: var(--raised); border: 1px solid var(--line); border-radius: 10px 10px 14px 14px;
+  padding: .55rem .6rem .6rem; display: flex; flex-direction: column; cursor: pointer;
+  border-top: 5px solid var(--cat, var(--line));
+}
+.pedal[aria-selected="true"] { border-color: var(--lcd); border-top-color: var(--cat); box-shadow: 0 0 0 1px var(--lcd); }
+.pedal.off .pname, .pedal.off .pcat { opacity: .45; }
+.pedal .pos { color: var(--muted); font-size: .75rem; }
+.pedal .pname { font-weight: 700; font-size: 1.02rem; line-height: 1.15; margin-top: .15rem; }
+.pedal .pcat { color: var(--muted); font-size: .78rem; }
+.pedal .untested { color: var(--warn); font-size: .72rem; margin-top: .2rem; }
+.pedal .foot { margin-top: auto; display: flex; align-items: center; justify-content: space-between; }
+.led { width: .7rem; height: .7rem; border-radius: 50%; background: var(--led-off); border: 1px solid #000; }
+.pedal:not(.off) .led { background: var(--led); box-shadow: 0 0 8px var(--led); }
+.switch {
+  width: 40px; height: 40px; border-radius: 50%; padding: 0;
+  background: radial-gradient(circle at 40% 35%, #c9cfd8, #7c8593 60%, #4b525d);
+  border: 2px solid #12161c;
+}
+.switch:active { transform: scale(.94); }
+.pedal.dragging { opacity: .4; }
+.pedal.drop-before { box-shadow: -4px 0 0 var(--lcd); }
+.pedal.empty {
+  border-style: dashed; border-top-width: 1px; background: transparent; align-items: center; justify-content: center;
+  color: var(--muted); font-size: .9rem;
+}
+.pedal.empty:hover { color: var(--text); border-color: var(--muted); }
+
+/* ---- editor ---- */
+.editor { margin-top: .6rem; }
+.ed-head { display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: baseline; margin-bottom: 1rem; }
+.ed-head h1 { margin: 0; font-size: 1.5rem; }
+.ed-head p { margin: 0; color: var(--muted); flex-basis: 100%; max-width: 70ch; }
+.ed-head .tools { margin-left: auto; display: flex; gap: .4rem; }
+.pages { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; }
+.page { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: .8rem 1rem 1rem; }
+.page h3 { margin: 0 0 .6rem; font-size: .85rem; font-weight: 600; color: var(--muted); }
+.param { display: grid; grid-template-columns: 1fr auto; gap: .2rem .6rem; align-items: center; padding: .45rem 0; }
+.param + .param { border-top: 1px solid rgba(59,70,86,.6); }
+.param label { font-weight: 600; }
+.param .meta { grid-column: 1 / -1; display: flex; gap: .5rem; align-items: center; font-size: .78rem; color: var(--muted); }
+.param .meta .def { margin-left: auto; }
+.param input[type=number] { width: 5.2rem; text-align: right; }
+.param input[type=range] { grid-column: 1 / -1; width: 100%; accent-color: var(--lcd); }
+.param select { min-width: 9rem; max-width: 14rem; }
+.param.is-default label::after { content: " (padrão)"; font-weight: 400; color: var(--muted); font-size: .8rem; }
+.pedalmark { border: 1px solid var(--line); border-radius: 3px; padding: 0 .3rem; }
+
+.empty-state { max-width: 52ch; color: var(--muted); padding: 2rem 0; }
+.empty-state strong { color: var(--text); }
+
+/* ---- mensagens ---- */
+.messages { margin-top: 1.4rem; display: grid; gap: .35rem; max-width: 80ch; }
+.msg { padding: .5rem .75rem; border-radius: 6px; border-left: 3px solid; background: var(--panel); }
+.msg.err { border-color: var(--err); }
+.msg.warn { border-color: var(--warn); }
+.msg.ok { border-color: var(--ok); }
+.banner {
+  position: sticky; bottom: 0; margin-top: 1.4rem; padding: .9rem 1rem; border-radius: 8px;
+  background: var(--lcd-bg); border: 1px solid var(--lcd-dim); color: var(--lcd);
+  display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: center;
+}
+.banner p { margin: 0; flex: 1 1 30ch; }
+.dirty { color: var(--warn); font-size: .85rem; }
+
+/* ---- seletor de efeito ---- */
+dialog {
+  background: var(--panel); color: var(--text); border: 1px solid var(--line); border-radius: 10px;
+  width: min(760px, 94vw); max-height: 86vh; padding: 0;
+}
+dialog::backdrop { background: rgba(5,8,12,.65); }
+.dlg-head { display: flex; gap: .6rem; padding: .9rem 1rem; border-bottom: 1px solid var(--line); align-items: center; }
+.dlg-head input { flex: 1; }
+.cats { display: flex; flex-wrap: wrap; gap: .35rem; padding: .7rem 1rem 0; }
+.cats button { padding: .25rem .6rem; font-size: .85rem; border-radius: 20px; }
+.cats button[aria-pressed="true"] { background: var(--text); color: var(--chassis); border-color: var(--text); }
+.fxlist { list-style: none; margin: 0; padding: .6rem 1rem 1rem; overflow: auto; max-height: 60vh;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: .45rem; }
+.fxlist button { width: 100%; text-align: left; border-left: 4px solid var(--cat); height: 100%; }
+.fxlist small { display: block; color: var(--muted); font-size: .78rem; }
+
+.toast {
+  position: fixed; right: 1.2rem; bottom: 1.2rem; max-width: 46ch; padding: .7rem 1rem; border-radius: 8px;
+  background: var(--raised); border: 1px solid var(--line); box-shadow: 0 6px 24px rgba(0,0,0,.4);
+}
+.busy { cursor: progress; }
+
+@media (max-width: 860px) {
+  .body { grid-template-columns: 1fr; }
+  aside { border-right: 0; border-bottom: 1px solid var(--line); max-height: 40vh; }
+  #pname { font-size: 1.6rem; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<header>
+  <div class="lcd" aria-label="Visor do patch">
+    <select id="slot" aria-label="Memória de destino"></select>
+    <input id="pname" type="text" maxlength="10" placeholder="NOME" aria-label="Nome do patch" spellcheck="false">
+    <div class="lvl">
+      <span>LVL</span>
+      <input id="level" type="number" min="0" max="127" aria-label="Patch level">
+      <span id="levelDest">do destino</span>
+      <button id="levelkeep" class="lcdbtn" type="button"></button>
+    </div>
+  </div>
+  <div class="actions">
+    <button class="conn quiet" id="btnStatus" title="Verificar conexão com a pedaleira"><span class="dot" id="dot"></span><span id="connText">Pedaleira não verificada</span></button>
+    <button id="btnPull">Ler da memória</button>
+    <label class="store-opt"><input type="checkbox" id="autostore" checked> gravar automaticamente</label>
+    <button class="primary" id="btnPush">Enviar para a pedaleira</button>
+  </div>
+</header>
+
+<div class="body">
+  <aside>
+    <section>
+      <div class="side-head"><h2>Patches</h2><button class="quiet" id="btnNew">Novo</button></div>
+      <ul class="files" id="fileList"></ul>
+    </section>
+    <section>
+      <h2>Arquivo</h2>
+      <div style="display:flex; gap:.4rem; flex-wrap:wrap">
+        <button id="btnSave">Salvar</button>
+        <button id="btnSaveAs">Salvar como…</button>
+      </div>
+      <p class="dirty" id="dirty" hidden>Alterações não salvas</p>
+    </section>
+    <section>
+      <div class="side-head"><h2>Backups</h2><button class="quiet" id="btnRefreshBk">Atualizar</button></div>
+      <ul class="files" id="bkList"></ul>
+    </section>
+  </aside>
+
+  <main>
+    <div class="chain" id="chain" aria-label="Cadeia de efeitos, na ordem do sinal"></div>
+    <section class="editor" id="editor"></section>
+    <div class="messages" id="messages" aria-live="polite"></div>
+    <div id="bannerSlot"></div>
+  </main>
+</div>
+
+<dialog id="picker" aria-label="Escolher efeito">
+  <div class="dlg-head">
+    <input type="text" id="pickSearch" placeholder="Buscar efeito (ex.: rectifier, delay, TS808)">
+    <button class="quiet" id="pickClose">Fechar</button>
+  </div>
+  <div class="cats" id="pickCats"></div>
+  <ul class="fxlist" id="pickList"></ul>
+</dialog>
+
+<script>
+"use strict";
+const TOKEN = "__TOKEN__";
+const CAT_NAMES = { dynamics: "Dinâmica", filter: "Filtro", drive: "Drive", amp: "Amp", eq: "EQ",
+                    modulation: "Modulação", delay: "Delay", reverb: "Reverb" };
+const $ = (s) => document.querySelector(s);
+const el = (tag, attrs = {}, ...kids) => {
+  const n = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (k === "class") n.className = v;
+    else if (k.startsWith("on")) n.addEventListener(k.slice(2), v);
+    else if (v === true) n.setAttribute(k, "");
+    else if (v !== false && v != null) n.setAttribute(k, v);
+  }
+  for (const k of kids.flat()) if (k != null) n.append(k.nodeType ? k : document.createTextNode(k));
+  return n;
+};
+
+const S = { catalog: null, fx: {}, doc: null, file: null, sel: 0, dirty: false, pickTarget: null, pickCat: null };
+
+async function api(route, body = {}) {
+  document.body.classList.add("busy");
+  try {
+    const r = await fetch("/api/" + route, {
+      method: "POST", headers: { "Content-Type": "application/json", "X-Zoomfx-Token": TOKEN },
+      body: JSON.stringify(body),
+    });
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.error || ("erro " + r.status));
+    return data;
+  } finally { document.body.classList.remove("busy"); }
+}
+
+function toast(text, ms = 3500) {
+  const t = el("div", { class: "toast", role: "status" }, text);
+  document.body.append(t);
+  setTimeout(() => t.remove(), ms);
+}
+
+function fail(e) { toast(e.message || String(e), 7000); }
+
+/* ---------- documento ---------- */
+function blankDoc() {
+  return { "$schema": "../schema/patch.schema.json", format: "zoomfx-patch/1", device: S.catalog.device.id,
+           name: "NOVO", description: "", level: null, chain: [] };
+}
+
+function setDirty(v = true) { S.dirty = v; $("#dirty").hidden = !v; }
+
+function changed() { setDirty(); renderChain(); scheduleValidate(); }
+
+function loadDoc(doc, file = null) {
+  S.doc = doc; S.file = file; S.sel = 0;
+  doc.chain = doc.chain || [];
+  setDirty(false); renderAll(); scheduleValidate();
+}
+
+function paramValue(item, p) {
+  const given = item.params || {};
+  return p.name in given ? given[p.name] : p.default;
+}
+
+/* ---------- render ---------- */
+function renderAll() { renderHeader(); renderChain(); renderEditor(); renderFiles(); }
+
+function renderHeader() {
+  $("#pname").value = S.doc.name || "";
+  const keep = S.doc.level == null;
+  $("#level").hidden = keep;
+  $("#levelDest").hidden = !keep;
+  $("#level").value = keep ? "" : S.doc.level;
+  $("#levelkeep").textContent = keep ? "definir" : "usar o do destino";
+  $("#levelkeep").title = keep
+    ? "Definir um patch level fixo para este patch"
+    : "Manter o patch level que já está na memória de destino";
+}
+
+function renderChain() {
+  const box = $("#chain");
+  box.replaceChildren(el("span", { class: "jack" }, "Guitarra"));
+  S.doc.chain.forEach((item, i) => {
+    const fx = S.fx[item.effect] || findFx(item.effect);
+    const on = item.on !== false;
+    const card = el("div", {
+      class: "pedal" + (on ? "" : " off"), role: "button", tabindex: "0", draggable: "true",
+      "aria-selected": String(i === S.sel), "aria-label": `Efeito ${i + 1}: ${fx ? fx.name : item.effect}`,
+      style: fx ? `--cat: var(--c-${fx.category})` : "",
+      onclick: () => { S.sel = i; renderChain(); renderEditor(); },
+      onkeydown: (ev) => {
+        if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); S.sel = i; renderChain(); renderEditor(); }
+        if (ev.altKey && ev.key === "ArrowLeft") { ev.preventDefault(); move(i, i - 1); }
+        if (ev.altKey && ev.key === "ArrowRight") { ev.preventDefault(); move(i, i + 1); }
+      },
+      ondragstart: (ev) => { ev.dataTransfer.setData("text/plain", i); card.classList.add("dragging"); },
+      ondragend: () => card.classList.remove("dragging"),
+      ondragover: (ev) => { ev.preventDefault(); card.classList.add("drop-before"); },
+      ondragleave: () => card.classList.remove("drop-before"),
+      ondrop: (ev) => { ev.preventDefault(); move(+ev.dataTransfer.getData("text/plain"), i); },
+    },
+      el("span", { class: "pos" }, String(i + 1)),
+      el("span", { class: "pname" }, fx ? fx.name : "??? " + item.effect),
+      el("span", { class: "pcat" }, fx ? CAT_NAMES[fx.category] : "fora do catálogo"),
+      fx && fx.status !== "tested" ? el("span", { class: "untested" }, "não testado") : null,
+      el("div", { class: "foot" },
+        el("span", { class: "led", "aria-hidden": "true" }),
+        el("button", { class: "switch", title: on ? "Desligar efeito" : "Ligar efeito",
+                       "aria-label": on ? "Desligar efeito" : "Ligar efeito", "aria-pressed": String(on),
+                       onclick: (ev) => { ev.stopPropagation(); item.on = !on; changed(); renderEditor(); } })),
+    );
+    box.append(card, el("span", { class: "cable", "aria-hidden": "true" }));
+  });
+  if (S.doc.chain.length < S.catalog.max_effects) {
+    box.append(el("button", { class: "pedal empty", onclick: () => openPicker(null) }, "Adicionar efeito"),
+               el("span", { class: "cable", "aria-hidden": "true" }));
+  }
+  box.append(el("span", { class: "jack" }, "Amp"));
+}
+
+function move(from, to) {
+  const c = S.doc.chain;
+  if (to < 0 || to >= c.length || from === to) return renderChain();
+  const [it] = c.splice(from, 1);
+  c.splice(to, 0, it);
+  S.sel = to; changed(); renderEditor();
+}
+
+function renderEditor() {
+  const box = $("#editor");
+  const item = S.doc.chain[S.sel];
+  if (!item) {
+    box.replaceChildren(el("div", { class: "empty-state" },
+      el("p", {}, el("strong", {}, "Nenhum efeito na cadeia. ")),
+      el("p", {}, "Use “Adicionar efeito” para montar até 5 efeitos, na ordem em que o sinal passa da guitarra para o amp."),
+      el("p", {}, "Também dá para abrir um patch salvo na lista ao lado ou ler uma memória da pedaleira.")));
+    return;
+  }
+  const fx = S.fx[item.effect] || findFx(item.effect);
+  if (!fx) {
+    box.replaceChildren(el("div", { class: "empty-state" },
+      el("p", {}, `O efeito “${item.effect}” não está no catálogo, então não pode ser editado nem enviado.`),
+      el("button", { onclick: () => removeFx(S.sel) }, "Remover da cadeia")));
+    return;
+  }
+  item.effect = fx.id;
+  const pages = {};
+  for (const p of fx.params) (pages[p.page] = pages[p.page] || []).push(p);
+
+  box.replaceChildren(
+    el("div", { class: "ed-head" },
+      el("h1", {}, fx.name),
+      el("div", { class: "tools" },
+        el("button", { onclick: () => openPicker(S.sel) }, "Trocar efeito"),
+        el("button", { onclick: () => move(S.sel, S.sel - 1), disabled: S.sel === 0, title: "Mover para antes (Alt+←)" }, "Mover antes"),
+        el("button", { onclick: () => move(S.sel, S.sel + 1), disabled: S.sel === S.doc.chain.length - 1, title: "Mover para depois (Alt+→)" }, "Mover depois"),
+        el("button", { class: "quiet", onclick: () => removeFx(S.sel) }, "Remover")),
+      el("p", {}, fx.description + (fx.status !== "tested" ? " Este efeito ainda não foi testado numa pedaleira real." : ""))),
+    el("div", { class: "pages" }, Object.keys(pages).sort().map((pg) =>
+      el("div", { class: "page" }, el("h3", {}, "Página " + pg), pages[pg].map((p) => paramRow(item, p))))),
+  );
+}
+
+function paramRow(item, p) {
+  const v = paramValue(item, p);
+  const isDef = !(item.params && p.name in item.params);
+  const id = "p_" + p.name.replace(/\W/g, "_");
+  const set = (val) => {
+    item.params = item.params || {};
+    item.params[p.name] = val;
+    row.classList.remove("is-default");
+    changed();
+  };
+  let control, slider = null;
+  if (p.type === "enum") {
+    control = el("select", { id, onchange: (ev) => set(p.options[ev.target.selectedIndex - (p.default == null ? 1 : 0)]) },
+      p.default == null ? el("option", { value: "" }, "— (do amp)") : null,
+      p.options.map((o) => el("option", { selected: o === v }, String(o))));
+    if (p.default == null && v == null) control.selectedIndex = 0;
+  } else {
+    const num = el("input", { id, type: "number", min: p.min, max: p.max, value: v,
+      onchange: (ev) => {
+        let n = Math.round(+ev.target.value);
+        if (Number.isNaN(n)) n = p.default;
+        n = Math.max(p.min, Math.min(p.max, n));
+        ev.target.value = n; slider.value = n; set(n);
+      } });
+    slider = el("input", { type: "range", min: p.min, max: p.max, value: v, "aria-label": p.name,
+      oninput: (ev) => { num.value = ev.target.value; set(+ev.target.value); } });
+    control = num;
+  }
+  const row = el("div", { class: "param" + (isDef ? " is-default" : "") },
+    el("label", { for: id }, p.name), control, slider,
+    el("div", { class: "meta" },
+      el("span", {}, p.type === "enum" ? `${p.options.length} opções` : `${p.min} a ${p.max}`),
+      p.pedal ? el("span", { class: "pedalmark", title: "Pode ser controlado pelo pedal de expressão" }, "pedal") : null,
+      p.note ? el("span", { title: p.note }, "ⓘ") : null,
+      !isDef ? el("button", { class: "quiet def", style: "padding:0 .3rem; font-size:.78rem",
+        onclick: () => { delete item.params[p.name]; changed(); renderEditor(); } }, "voltar ao padrão") : null));
+  return row;
+}
+
+function removeFx(i) {
+  S.doc.chain.splice(i, 1);
+  S.sel = Math.max(0, Math.min(S.sel, S.doc.chain.length - 1));
+  changed(); renderEditor();
+}
+
+function findFx(ref) {
+  const norm = (s) => String(s).toLowerCase().replace(/[\s\-_.]/g, "");
+  return Object.values(S.fx).find((f) => norm(f.id) === norm(ref) || norm(f.name) === norm(ref));
+}
+
+/* ---------- seletor ---------- */
+function openPicker(target) {
+  S.pickTarget = target; S.pickCat = null;
+  $("#pickSearch").value = "";
+  renderPicker();
+  $("#picker").showModal();
+  $("#pickSearch").focus();
+}
+
+function renderPicker() {
+  const cats = [...new Set(S.catalog.effects.map((f) => f.category))];
+  $("#pickCats").replaceChildren(
+    el("button", { "aria-pressed": String(S.pickCat === null), onclick: () => { S.pickCat = null; renderPicker(); } }, "Todos"),
+    ...cats.map((c) => el("button", { "aria-pressed": String(S.pickCat === c), onclick: () => { S.pickCat = c; renderPicker(); } }, CAT_NAMES[c] || c)));
+  const q = $("#pickSearch").value.trim().toLowerCase();
+  const list = S.catalog.effects.filter((f) => (!S.pickCat || f.category === S.pickCat) &&
+    (!q || (f.name + " " + f.id + " " + f.description).toLowerCase().includes(q)));
+  $("#pickList").replaceChildren(...list.map((f) => el("li", {},
+    el("button", { style: `--cat: var(--c-${f.category})`, onclick: () => pick(f) },
+      el("strong", {}, f.name), el("small", {}, f.description),
+      f.status !== "tested" ? el("small", { style: "color:var(--warn)" }, "não testado") : null))));
+  if (!list.length) $("#pickList").append(el("li", { style: "color:var(--muted)" }, "Nenhum efeito encontrado com esse termo."));
+}
+
+function pick(f) {
+  const item = { effect: f.id, on: true, params: {} };
+  if (S.pickTarget == null) { S.doc.chain.push(item); S.sel = S.doc.chain.length - 1; }
+  else S.doc.chain[S.pickTarget] = item;
+  $("#picker").close();
+  changed(); renderEditor();
+}
+
+/* ---------- validação ---------- */
+let vTimer = null;
+function scheduleValidate() { clearTimeout(vTimer); vTimer = setTimeout(validateNow, 250); }
+
+async function validateNow() {
+  try {
+    const r = await api("validate", { doc: S.doc });
+    showMessages(r.errors.map((t) => ["err", t]).concat(r.warnings.map((t) => ["warn", t])));
+    $("#btnPush").disabled = !r.ok;
+    return r.ok;
+  } catch (e) { fail(e); return false; }
+}
+
+function showMessages(list) {
+  $("#messages").replaceChildren(...list.map(([k, t]) => el("div", { class: "msg " + k }, t)));
+}
+
+/* ---------- arquivos ---------- */
+async function refreshFiles() {
+  const r = await api("patches/list");
+  S.files = r.patches; renderFiles();
+}
+
+function renderFiles() {
+  $("#fileList").replaceChildren(...(S.files || []).map((f) => el("li", {},
+    el("button", { "aria-current": String(f.file === S.file), title: f.description,
+                   onclick: () => openFile(f.file) },
+      f.name || f.file, el("small", {}, f.file)))));
+  if (!(S.files || []).length) $("#fileList").append(el("li", { style: "color:var(--muted); font-size:.85rem" }, "Nenhum patch na pasta."));
+}
+
+async function openFile(file) {
+  if (S.dirty && !confirm("Descartar as alterações não salvas?")) return;
+  try { loadDoc((await api("patches/get", { file })).doc, file); } catch (e) { fail(e); }
+}
+
+function suggestFile() {
+  return (S.doc.name || "patch").toLowerCase().trim().replace(/[^\w\- ]+/g, "").replace(/\s+/g, "-") + ".json";
+}
+
+async function save(asNew = false) {
+  let file = S.file;
+  if (asNew || !file) {
+    file = prompt("Nome do arquivo (na pasta patches/):", suggestFile());
+    if (!file) return;
+    if (!file.endsWith(".json")) file += ".json";
+  }
+  try {
+    const r = await api("patches/save", { file, doc: S.doc });
+    S.file = r.saved; setDirty(false);
+    toast("Salvo em patches/" + r.saved);
+    await refreshFiles();
+  } catch (e) { fail(e); }
+}
+
+async function refreshBackups() {
+  try {
+    const r = await api("backups/list");
+    $("#bkList").replaceChildren(...r.backups.slice(0, 40).map((b) => el("li", {},
+      el("div", { class: "row" },
+        el("button", { title: "Abrir no editor", onclick: () => openBackup(b.file) }, b.name || "?",
+          el("small", {}, b.file.replace(/^backup_/, "").replace(/\.syx$/, ""))),
+        el("button", { class: "quiet", title: "Gravar este backup na memória selecionada no visor",
+                       onclick: () => restore(b.file) }, "Restaurar")))));
+    if (!r.backups.length) $("#bkList").append(el("li", { style: "color:var(--muted); font-size:.85rem" }, "Os backups aparecem aqui depois do primeiro envio."));
+  } catch (e) { fail(e); }
+}
+
+async function openBackup(file) {
+  if (S.dirty && !confirm("Descartar as alterações não salvas?")) return;
+  try { loadDoc((await api("backups/open", { file })).doc, null); setDirty(true); } catch (e) { fail(e); }
+}
+
+/* ---------- pedaleira ---------- */
+async function checkStatus() {
+  try {
+    const r = await api("pedal/status");
+    $("#dot").className = "dot on";
+    $("#connText").textContent = `${r.model} conectada · firmware ${r.firmware}`;
+  } catch (e) {
+    $("#dot").className = "dot bad";
+    $("#connText").textContent = "Pedaleira não encontrada";
+    fail(e);
+  }
+}
+
+async function pull() {
+  const slot = $("#slot").value;
+  if (S.dirty && !confirm(`Ler ${slot} vai substituir o patch aberto, que tem alterações não salvas. Continuar?`)) return;
+  try {
+    const r = await api("pedal/pull", { slot });
+    loadDoc(r.doc, null); setDirty(true);
+    toast(`Lido da memória ${slot}. Salve para guardar como arquivo.`);
+  } catch (e) { fail(e); }
+}
+
+async function push() {
+  if (!(await validateNow())) return;
+  const slot = $("#slot").value;
+  if (!confirm(`Substituir a memória ${slot} da pedaleira por “${S.doc.name}”?\nO conteúdo atual vai para os backups.`)) return;
+  try { handleWrite(await api("pedal/push", { doc: S.doc, slot, store: $("#autostore").checked })); }
+  catch (e) { fail(e); }
+}
+
+async function restore(file) {
+  const slot = $("#slot").value;
+  if (!confirm(`Gravar o backup ${file} na memória ${slot}?\nO conteúdo atual de ${slot} também vai para os backups.`)) return;
+  try { handleWrite(await api("pedal/restore", { file, slot, store: $("#autostore").checked })); }
+  catch (e) { fail(e); }
+}
+
+function handleWrite(r) {
+  refreshBackups();
+  if (r.state === "stored") {
+    $("#bannerSlot").replaceChildren();
+    showMessages([["ok", `Gravado em ${r.slot} e conferido. Backup do conteúdo anterior: ${r.backup}`]]);
+    return;
+  }
+  const why = r.store_tried ? "A gravação automática não confirmou. " : "";
+  const b = el("div", { class: "banner", role: "alert" },
+    el("p", {}, `${why}O patch está carregado em ${r.slot}, mas ainda não foi gravado. Salve na pedaleira, na memória ${r.slot}, sem trocar de patch.`),
+    el("button", { class: "primary", onclick: confirmSaved }, "Já salvei, conferir"),
+    el("button", { onclick: cancelWrite }, "Cancelar"));
+  $("#bannerSlot").replaceChildren(b);
+}
+
+async function confirmSaved() {
+  try {
+    const r = await api("pedal/confirm");
+    if (r.state === "stored") {
+      $("#bannerSlot").replaceChildren();
+      showMessages([["ok", `Conferido: ${r.slot} gravado.`]]);
+    } else toast(`${r.slot} ainda não está com o patch novo. Salve na pedaleira e confira de novo.`, 6000);
+  } catch (e) { fail(e); }
+}
+
+async function cancelWrite() {
+  try { await api("pedal/cancel"); } catch (e) { fail(e); }
+  $("#bannerSlot").replaceChildren();
+  toast("Cancelado. A memória continua como estava.");
+}
+
+/* ---------- eventos ---------- */
+$("#pname").addEventListener("input", (ev) => {
+  const clean = ev.target.value.replace(/[^\x20-\x7e]/g, "");
+  if (clean !== ev.target.value) ev.target.value = clean;
+  S.doc.name = clean.toUpperCase(); setDirty(); scheduleValidate();
+});
+$("#levelkeep").addEventListener("click", () => {
+  S.doc.level = S.doc.level == null ? 80 : null; renderHeader(); setDirty(); scheduleValidate();
+});
+$("#level").addEventListener("change", (ev) => {
+  S.doc.level = Math.max(0, Math.min(127, Math.round(+ev.target.value || 0))); renderHeader(); setDirty(); scheduleValidate();
+});
+$("#btnNew").addEventListener("click", () => {
+  if (S.dirty && !confirm("Descartar as alterações não salvas?")) return;
+  loadDoc(blankDoc(), null); renderFiles();
+});
+$("#btnSave").addEventListener("click", () => save(false));
+$("#btnSaveAs").addEventListener("click", () => save(true));
+$("#btnRefreshBk").addEventListener("click", refreshBackups);
+$("#btnStatus").addEventListener("click", checkStatus);
+$("#btnPull").addEventListener("click", pull);
+$("#btnPush").addEventListener("click", push);
+$("#pickClose").addEventListener("click", () => $("#picker").close());
+$("#pickSearch").addEventListener("input", renderPicker);
+document.addEventListener("keydown", (ev) => {
+  if ((ev.ctrlKey || ev.metaKey) && ev.key === "s") { ev.preventDefault(); save(false); }
+});
+window.addEventListener("beforeunload", (ev) => { if (S.dirty) { ev.preventDefault(); ev.returnValue = ""; } });
+
+(async function init() {
+  try {
+    S.catalog = await api("catalog");
+    for (const f of S.catalog.effects) S.fx[f.id] = f;
+    $("#slot").replaceChildren(...S.catalog.slots.map((s) => el("option", {}, s)));
+    $("#slot").value = "A7";
+    await refreshFiles();
+    refreshBackups();
+    if (S.files.length) await openFile(S.files.find((f) => f.file === "heavy.json") ? "heavy.json" : S.files[0].file);
+    else loadDoc(blankDoc());
+  } catch (e) { fail(e); }
+})();
+</script>
+</body>
+</html>

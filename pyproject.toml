@@ -16,3 +16,6 @@ zoomfx = "zoomfx.cli:main"
 
 [tool.setuptools]
 packages = ["zoomfx"]
+
+[tool.setuptools.package-data]
+zoomfx = ["web/*.html"]

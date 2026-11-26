@@ -39,6 +39,24 @@ Se aparecer "sem permissão em /dev/snd/midi…": `sudo usermod -aG audio $USER`
 
 **Feche o ToneLib antes de usar:** ele ocupa a porta MIDI.
 
+## Interface
+
+```bash
+zoomfx ui
+```
+
+Sobe um servidor local em `http://127.0.0.1:8765` e abre o navegador. Rode de dentro da pasta do projeto: a interface usa a pasta `patches/` e salva os backups em `backups/`.
+
+- **O visor** mostra a memória de destino, o nome do patch e o patch level. O nome é editado direto ali. No level, "do destino" mantém o volume que já está na memória.
+- **A cadeia de sinal** vai da guitarra ao amp, com até 5 pedais. Clique num pedal para editar. O footswitch liga e desliga o efeito. Para reordenar, arraste ou use Alt+←/→.
+- **Os parâmetros** ficam nas mesmas páginas 1/2/3 da pedaleira, com slider e campo numérico. "(padrão)" indica um valor que não está no arquivo e vem do catálogo. "voltar ao padrão" tira o valor do arquivo.
+- **Validação** enquanto você edita: erros bloqueiam o envio, e avisos indicam, por exemplo, efeitos ainda não testados.
+- **Ler da memória** e **Enviar para a pedaleira** fazem o mesmo que o `pull` e o `push` da CLI, com backup e conferência. Se a gravação automática não confirmar, uma faixa no rodapé pede para você salvar no pedal e depois clicar em "Já salvei, conferir".
+- **Backups:** abrem no editor ou podem ser restaurados na memória selecionada no visor.
+- **Ctrl+S** salva o arquivo.
+
+O servidor só aceita conexões do próprio computador e exige um token gerado a cada execução. Assim, outro site aberto no navegador não consegue mandar comandos para a pedaleira.
+
 ## Comandos
 
 | Comando | O que faz |
@@ -52,6 +70,7 @@ Se aparecer "sem permissão em /dev/snd/midi…": `sudo usermod -aG audio $USER`
 | `zoomfx backup --all` ou `zoomfx backup A0 A1` | Salva memórias em `backups/*.syx` |
 | `zoomfx restore backups/x.syx --slot A7 [--store]` | Devolve um backup para uma memória |
 | `zoomfx export arquivo.json` | Gera um `.syx` sem conectar na pedaleira |
+| `zoomfx ui [--port 8765]` | Abre a interface no navegador |
 
 As memórias vão de **A0 a J9** (10 bancos com 10 memórias cada).
 
@@ -94,9 +113,12 @@ zoomfx/
   catalog.py               carrega e valida o catálogo; conversão tela <-> bruto
   patch.py                 JSON <-> bytes, validação
   midi.py                  transporte USB-MIDI (ALSA)
+  service.py               operações com a pedaleira (usadas pela CLI e pela interface)
   cli.py                   comandos
+  web.py, web/index.html   interface local (só biblioteca padrão, sem build)
 tools/                     gerador do catálogo
 tests/                     testes (python -m unittest discover -s tests)
+  fake_pedal.py            emulador da G1Xon num pseudo-terminal, para testar sem o aparelho
 ```
 
 ## Catálogo de efeitos

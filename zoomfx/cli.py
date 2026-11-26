@@ -3,63 +3,49 @@
 import argparse
 import os
 import sys
-import time
 
 from . import patch as P
 from .catalog import Catalog, CatalogError
-from .midi import MidiError, Pedal, find_device, load_syx, save_syx
+from .midi import MidiError, load_syx, save_syx
 
-BACKUP_DIR = "backups"
+from . import service
+
+BACKUP_DIR = service.BACKUP_DIR
 
 
 def _open_pedal(args, cat):
-    dev = args.device
-    if not dev:
-        dev, desc = find_device()
-        if not dev:
-            raise MidiError("pedaleira não encontrada em /dev/snd/midi*. Ligue via USB, feche o "
-                            "ToneLib e confira `cat /proc/asound/cards`, ou use --device")
-        print("Dispositivo: %s  (%s)" % (dev, desc))
-    pedal = Pedal(dev, cat)
-    model, fw = pedal.identify()
-    print("Modelo: %s (ID 0x%02X), firmware %s" % (model, pedal.model_id, fw))
-    pedal.editor(True)
+    pedal, info = service.connect(cat, args.device)
+    if info["card"]:
+        print("Dispositivo: %s  (%s)" % (info["device"], info["card"]))
+    print("Modelo: %s (ID 0x%02X), firmware %s" % (info["model"], info["model_id"], info["firmware"]))
     return pedal
 
 
-def _backup(pedal, cat, slot, label="backup"):
-    old = pedal.read_patch(slot)
-    if old is None:
-        raise MidiError("não consegui ler a memória %s; nada foi alterado" % cat.slot_name(slot))
-    os.makedirs(BACKUP_DIR, exist_ok=True)
-    path = os.path.join(BACKUP_DIR, "%s_%s_%s.syx" % (label, cat.slot_name(slot), time.strftime("%Y%m%d-%H%M%S")))
-    save_syx(path, cat, pedal.model_id, old)
-    return old, path
+def _backup(pedal, cat, slot):
+    return service.backup(pedal, cat, slot)
 
 
 def _write_and_store(pedal, cat, slot, new, store):
     """Envia para o buffer de edição de 'slot', confere e grava."""
-    pedal.select(slot)
-    pedal.write_current(new)
-    back = pedal.read_current()
-    if back != new:
+    ok, back = service.load_to_buffer(pedal, slot, new)
+    if not ok:
         print("\nATENÇÃO: a pedaleira devolveu um patch diferente do enviado. Nada foi gravado.")
         if back:
             print(P.describe(P.decode(back, cat), cat))
         return False
-    print("\nPatch carregado em %s (ainda não gravado)." % cat.slot_name(slot))
+    name = cat.slot_name(slot)
+    print("\nPatch carregado em %s (ainda não gravado)." % name)
     if store:
-        pedal.store(slot)
-        if pedal.read_patch(slot) == new:
-            print("Gravado em %s e conferido." % cat.slot_name(slot))
+        if service.try_store(pedal, slot, new):
+            print("Gravado em %s e conferido." % name)
             return True
         print("O store automático não confirmou.")
-    print("Salve agora na pedaleira, em %s. NÃO troque de patch antes." % cat.slot_name(slot))
+    print("Salve agora na pedaleira, em %s. NÃO troque de patch antes." % name)
     input("Depois de salvar, aperte Enter para eu conferir... ")
-    if pedal.read_patch(slot) == new:
-        print("Conferido: %s gravado." % cat.slot_name(slot))
+    if service.is_stored(pedal, slot, new):
+        print("Conferido: %s gravado." % name)
         return True
-    print("%s ainda não está com o patch novo. Tente de novo com --store." % cat.slot_name(slot))
+    print("%s ainda não está com o patch novo. Tente de novo com --store." % name)
     return False
 
 
@@ -163,6 +149,12 @@ def cmd_restore(args, cat):
         return 0 if _write_and_store(pedal, cat, slot, data, args.store) else 1
 
 
+def cmd_ui(args, cat):
+    from .web import serve
+    serve(cat, port=args.port, open_browser=not args.no_browser,
+          patches_dir=args.patches, backups_dir=BACKUP_DIR, device=args.device)
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(prog="zoomfx", description="Patches da Zoom G1on/G1Xon em JSON.")
     ap.add_argument("--catalog", help="pasta do catálogo (padrão: a do projeto)")
@@ -211,6 +203,12 @@ def main(argv=None):
     s.add_argument("--slot", required=True)
     s.add_argument("--store", action="store_true")
     s.set_defaults(func=cmd_restore)
+
+    s = sub.add_parser("ui", help="abre a interface no navegador")
+    s.add_argument("--port", type=int, default=8765)
+    s.add_argument("--patches", default="patches", help="pasta dos patches .json")
+    s.add_argument("--no-browser", action="store_true")
+    s.set_defaults(func=cmd_ui)
 
     args = ap.parse_args(argv)
     try:
