@@ -131,6 +131,30 @@ class App:
         doc["description"] = "Lido da memória %s" % self.cat.slot_name(slot)
         return {"doc": doc}
 
+    def list_slots(self, _body):
+        """Lê todas as memórias (A0..J9): posição, nome, efeitos e o patch decodificado."""
+        self._close_pending()
+        pedal, _ = service.connect(self.cat, self.device)
+        out = []
+        with pedal:
+            for s in range(self.cat.slot_count):
+                data = pedal.read_patch(s)
+                item = {"slot": self.cat.slot_name(s)}
+                if data is None:
+                    item.update(name=None, effects=[], doc=None, error="sem resposta")
+                else:
+                    doc = P.decode(data, self.cat, full=False)
+                    doc["description"] = "Lido da memória %s" % item["slot"]
+                    names = []
+                    for c in doc["chain"]:
+                        if c["effect"] == "unknown":
+                            names.append("?")
+                        else:
+                            names.append(self.cat.effect(c["effect"]).name + ("" if c["on"] else " (off)"))
+                    item.update(name=doc["name"], effects=names, doc=doc)
+                out.append(item)
+        return {"slots": out}
+
     def _write(self, slot, new, store, backup_path):
         name = self.cat.slot_name(slot)
         pedal = self.pending_pedal
@@ -194,7 +218,7 @@ class App:
         "catalog": "catalog", "patches/list": "list_patches", "patches/get": "get_patch",
         "patches/save": "save_patch", "patches/delete": "delete_patch", "validate": "validate",
         "backups/list": "list_backups", "backups/open": "open_backup",
-        "pedal/status": "status", "pedal/pull": "pull", "pedal/push": "push",
+        "pedal/status": "status", "pedal/pull": "pull", "pedal/push": "push", "pedal/list": "list_slots",
         "pedal/restore": "restore", "pedal/confirm": "confirm", "pedal/cancel": "cancel",
     }
 

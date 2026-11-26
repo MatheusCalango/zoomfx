@@ -47,6 +47,7 @@ zoomfx ui
 
 Sobe um servidor local em `http://127.0.0.1:8765` e abre o navegador. Rode de dentro da pasta do projeto: a interface usa a pasta `patches/` e salva os backups em `backups/`.
 
+- **Memórias** (barra lateral): "Ler todas" lista as 100 posições da pedaleira, de A0 a J9, com o nome do patch e os efeitos de cada uma. Tem filtro por nome ou efeito, e clicar numa posição abre o patch no editor e seleciona aquela memória no visor.
 - **O visor** mostra a memória de destino, o nome do patch e o patch level. O nome é editado direto ali. No level, "do destino" mantém o volume que já está na memória.
 - **A cadeia de sinal** vai da guitarra ao amp, com até 5 pedais. Clique num pedal para editar. O footswitch liga e desliga o efeito. Para reordenar, arraste ou use Alt+←/→.
 - **Os parâmetros** ficam nas mesmas páginas 1/2/3 da pedaleira, com slider e campo numérico. "(padrão)" indica um valor que não está no arquivo e vem do catálogo. "voltar ao padrão" tira o valor do arquivo.

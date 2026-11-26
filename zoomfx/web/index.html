@@ -98,7 +98,14 @@ aside { border-right: 1px solid var(--line); padding: 1rem; overflow: auto; disp
 .files small { display: block; color: var(--muted); font-size: .78rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .files .row { display: flex; align-items: center; }
 .files .row button.quiet { width: auto; padding: .2rem .45rem; font-size: .8rem; }
-.side-head { display: flex; justify-content: space-between; align-items: center; }
+.side-head { display: flex; justify-content: space-between; align-items: center; gap: .5rem; }
+.side-head button { white-space: nowrap; }
+.slots { max-height: 46vh; overflow: auto; margin-top: .3rem; }
+.slots li button { display: grid; grid-template-columns: 2.4rem 1fr; column-gap: .4rem; align-items: baseline; }
+.slots .sl { font-family: var(--lcdfont); color: var(--lcd); font-size: .95rem; }
+.slots .sn { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.slots small { grid-column: 2; }
+#slotFilter { width: 100%; margin-top: .4rem; font-size: .85rem; }
 
 main { padding: 1.4rem 1.6rem 3rem; overflow: auto; }
 
@@ -227,7 +234,12 @@ dialog::backdrop { background: rgba(5,8,12,.65); }
 <div class="body">
   <aside>
     <section>
-      <div class="side-head"><h2>Patches</h2><button class="quiet" id="btnNew">Novo</button></div>
+      <div class="side-head"><h2>Memórias</h2><button class="quiet" id="btnSlots">Ler todas</button></div>
+      <input type="text" id="slotFilter" placeholder="Filtrar por nome ou efeito" aria-label="Filtrar memórias" hidden>
+      <ul class="files slots" id="slotList"></ul>
+    </section>
+    <section>
+      <div class="side-head"><h2>Arquivos</h2><button class="quiet" id="btnNew">Novo</button></div>
       <ul class="files" id="fileList"></ul>
     </section>
     <section>
@@ -577,6 +589,59 @@ async function openBackup(file) {
   try { loadDoc((await api("backups/open", { file })).doc, null); setDirty(true); } catch (e) { fail(e); }
 }
 
+/* ---------- memórias da pedaleira ---------- */
+function renderSlots() {
+  const box = $("#slotList");
+  if (!S.slots) {
+    box.replaceChildren(el("li", { style: "color:var(--muted); font-size:.85rem" },
+      "Clique em “Ler todas” para ver o que está gravado em cada posição, de A0 a J9."));
+    return;
+  }
+  const q = $("#slotFilter").value.trim().toLowerCase();
+  const cur = $("#slot").value;
+  const list = S.slots.filter((it) => !q || (it.slot + " " + (it.name || "") + " " + it.effects.join(" ")).toLowerCase().includes(q));
+  box.replaceChildren(...list.map((it) => el("li", {},
+    el("button", { "aria-current": String(it.slot === cur), title: it.effects.join(" → "),
+                   onclick: () => openSlot(it) },
+      el("span", { class: "sl" }, it.slot),
+      el("span", { class: "sn" }, it.name || "(sem resposta)"),
+      el("small", {}, it.effects.length ? it.effects.join(", ") : "vazio")))));
+  if (!list.length) box.append(el("li", { style: "color:var(--muted); font-size:.85rem" }, "Nenhuma memória com esse termo."));
+}
+
+async function readSlots() {
+  if (S.pending) return toast("Termine a gravação em andamento antes de ler as memórias.");
+  const btn = $("#btnSlots");
+  btn.disabled = true; btn.textContent = "Lendo…";
+  try {
+    S.slots = (await api("pedal/list")).slots;
+    $("#slotFilter").hidden = false;
+    renderSlots();
+  } catch (e) { fail(e); }
+  finally { btn.disabled = false; btn.textContent = "Ler todas"; }
+}
+
+function openSlot(it) {
+  if (!it.doc) return toast(`Não consegui ler ${it.slot}.`);
+  if (S.dirty && !confirm(`Abrir ${it.slot} vai substituir o patch aberto, que tem alterações não salvas. Continuar?`)) return;
+  $("#slot").value = it.slot;
+  loadDoc(JSON.parse(JSON.stringify(it.doc)), null);
+  renderSlots();
+}
+
+function updateSlotEntry(slotName, doc) {
+  if (!S.slots) return;
+  const it = S.slots.find((x) => x.slot === slotName);
+  if (!it) return;
+  it.doc = JSON.parse(JSON.stringify(doc));
+  it.name = (doc.name || "").toUpperCase().slice(0, 10);
+  it.effects = doc.chain.map((c) => {
+    const f = S.fx[c.effect] || findFx(c.effect);
+    return (f ? f.name : "?") + (c.on === false ? " (off)" : "");
+  });
+  renderSlots();
+}
+
 /* ---------- pedaleira ---------- */
 async function checkStatus() {
   try {
@@ -604,6 +669,7 @@ async function push() {
   if (!(await validateNow())) return;
   const slot = $("#slot").value;
   if (!confirm(`Substituir a memória ${slot} da pedaleira por “${S.doc.name}”?\nO conteúdo atual vai para os backups.`)) return;
+  S.lastSent = JSON.parse(JSON.stringify(S.doc));
   try { handleWrite(await api("pedal/push", { doc: S.doc, slot, store: $("#autostore").checked })); }
   catch (e) { fail(e); }
 }
@@ -611,15 +677,21 @@ async function push() {
 async function restore(file) {
   const slot = $("#slot").value;
   if (!confirm(`Gravar o backup ${file} na memória ${slot}?\nO conteúdo atual de ${slot} também vai para os backups.`)) return;
-  try { handleWrite(await api("pedal/restore", { file, slot, store: $("#autostore").checked })); }
+  S.lastSent = null;   // restore: a lista é relida abaixo
+  try {
+    handleWrite(await api("pedal/restore", { file, slot, store: $("#autostore").checked }));
+    if (S.slots && !S.pending) readSlots();
+  }
   catch (e) { fail(e); }
 }
 
 function handleWrite(r) {
   refreshBackups();
+  S.pending = r.state === "awaiting_save" ? { slot: r.slot, doc: S.lastSent } : null;
   if (r.state === "stored") {
     $("#bannerSlot").replaceChildren();
     showMessages([["ok", `Gravado em ${r.slot} e conferido. Backup do conteúdo anterior: ${r.backup}`]]);
+    if (S.lastSent) updateSlotEntry(r.slot, S.lastSent);
     return;
   }
   const why = r.store_tried ? "A gravação automática não confirmou. " : "";
@@ -636,12 +708,15 @@ async function confirmSaved() {
     if (r.state === "stored") {
       $("#bannerSlot").replaceChildren();
       showMessages([["ok", `Conferido: ${r.slot} gravado.`]]);
+      if (S.pending && S.pending.doc) updateSlotEntry(r.slot, S.pending.doc);
+      S.pending = null;
     } else toast(`${r.slot} ainda não está com o patch novo. Salve na pedaleira e confira de novo.`, 6000);
   } catch (e) { fail(e); }
 }
 
 async function cancelWrite() {
   try { await api("pedal/cancel"); } catch (e) { fail(e); }
+  S.pending = null;
   $("#bannerSlot").replaceChildren();
   toast("Cancelado. A memória continua como estava.");
 }
@@ -665,6 +740,9 @@ $("#btnNew").addEventListener("click", () => {
 $("#btnSave").addEventListener("click", () => save(false));
 $("#btnSaveAs").addEventListener("click", () => save(true));
 $("#btnRefreshBk").addEventListener("click", refreshBackups);
+$("#btnSlots").addEventListener("click", readSlots);
+$("#slotFilter").addEventListener("input", renderSlots);
+$("#slot").addEventListener("change", renderSlots);
 $("#btnStatus").addEventListener("click", checkStatus);
 $("#btnPull").addEventListener("click", pull);
 $("#btnPush").addEventListener("click", push);
@@ -683,6 +761,7 @@ window.addEventListener("beforeunload", (ev) => { if (S.dirty) { ev.preventDefau
     $("#slot").value = "A7";
     await refreshFiles();
     refreshBackups();
+    renderSlots();
     if (S.files.length) await openFile(S.files.find((f) => f.file === "heavy.json") ? "heavy.json" : S.files[0].file);
     else loadDoc(blankDoc());
   } catch (e) { fail(e); }
